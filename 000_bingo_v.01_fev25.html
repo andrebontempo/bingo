@@ -325,11 +325,19 @@
       }
 
       function resetGameFunc() {
-        calledNumbers = []
-        calledNumber.textContent = "Começo de Jogo. Agora VAI!!!"
-        document
-          .querySelectorAll(".highlight")
-          .forEach((cell) => cell.classList.remove("highlight"))
+        // Exibe uma caixa de confirmação para o usuário
+        let confirmar = confirm(
+          "Tem certeza que deseja resetar o jogo? Isso apagará o progresso atual."
+        )
+
+        // Se o usuário confirmar, executa o reset
+        if (confirmar) {
+          calledNumbers = []
+          calledNumber.textContent = "Começo de Jogo. Agora VAI!!!"
+          document
+            .querySelectorAll(".highlight")
+            .forEach((cell) => cell.classList.remove("highlight"))
+        }
       }
 
       function speakNumber(number) {
