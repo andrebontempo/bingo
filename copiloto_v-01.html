@@ -290,57 +290,57 @@
       <div class="made-by">Made By: Vandesnei Araujo/André Bontempo</div>
     </div>
     <script>
-      // Lógica do jogo permanece inalterada
-      const generateNumber = document.getElementById("generateNumber");
-      const resetGame = document.getElementById("resetGame");
-      const calledNumber = document.getElementById("calledNumber");
-      let calledNumbers = [];
+      // Lógica do jogo permanece inalterada ...
+      const generateNumber = document.getElementById("generateNumber")
+      const resetGame = document.getElementById("resetGame")
+      const calledNumber = document.getElementById("calledNumber")
+      let calledNumbers = []
 
       function drawNumber() {
         if (calledNumbers.length >= 75) {
-          alert("Todos os números já foram sorteados!");
-          return;
+          alert("Todos os números já foram sorteados!")
+          return
         }
-        let number;
+        let number
         do {
-          number = Math.floor(Math.random() * 75) + 1;
-        } while (calledNumbers.includes(number));
-        calledNumbers.push(number);
-        highlightNumber(number);
-        calledNumber.textContent = `${getColumnLetter(number)}${number}`;
-        speakNumber(number);
+          number = Math.floor(Math.random() * 75) + 1
+        } while (calledNumbers.includes(number))
+        calledNumbers.push(number)
+        highlightNumber(number)
+        calledNumber.textContent = `${getColumnLetter(number)}${number}`
+        speakNumber(number)
       }
 
       function getColumnLetter(number) {
-        if (number >= 1 && number <= 15) return "B";
-        if (number >= 16 && number <= 30) return "i";
-        if (number >= 31 && number <= 45) return "N";
-        if (number >= 46 && number <= 60) return "G";
-        if (number >= 61 && number <= 75) return "O";
-        return "-";
+        if (number >= 1 && number <= 15) return "B"
+        if (number >= 16 && number <= 30) return "i"
+        if (number >= 31 && number <= 45) return "N"
+        if (number >= 46 && number <= 60) return "G"
+        if (number >= 61 && number <= 75) return "O"
+        return "-"
       }
 
       function highlightNumber(number) {
-        document.getElementById(`cell-${number}`).classList.add("highlight");
+        document.getElementById(`cell-${number}`).classList.add("highlight")
       }
 
       function resetGameFunc() {
-        calledNumbers = [];
-        calledNumber.textContent = "Começo de Jogo. Agora VAI!!!";
+        calledNumbers = []
+        calledNumber.textContent = "Começo de Jogo. Agora VAI!!!"
         document
           .querySelectorAll(".highlight")
-          .forEach((cell) => cell.classList.remove("highlight"));
+          .forEach((cell) => cell.classList.remove("highlight"))
       }
 
       function speakNumber(number) {
         const utterance = new SpeechSynthesisUtterance(
           `Número ${getColumnLetter(number)}${number}`
-        );
-        window.speechSynthesis.speak(utterance);
+        )
+        window.speechSynthesis.speak(utterance)
       }
 
-      generateNumber.addEventListener("click", drawNumber);
-      resetGame.addEventListener("click", resetGameFunc);
+      generateNumber.addEventListener("click", drawNumber)
+      resetGame.addEventListener("click", resetGameFunc)
     </script>
   </body>
 </html>
