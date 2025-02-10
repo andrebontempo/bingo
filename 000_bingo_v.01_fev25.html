@@ -39,7 +39,7 @@
         margin: 0 0 20px;
         text-transform: uppercase;
         letter-spacing: 2px;
-        color: #f4f4f9;
+        color: #86c3fd;
       }
 
       /* Exibição do número sorteado */
@@ -64,7 +64,7 @@
         padding: 10px 30px;
         border: none;
         border-radius: 10px;
-        background-color: #070322;
+        background-color: #391bfd;
         color: #fff;
         font-weight: bold;
         cursor: pointer;
@@ -159,13 +159,11 @@
   <body>
     <div class="content">
       <h1>Bingo Eletrônico</h1>
-      <div><h2></h2></div>
-      <div class="number-called" id="calledNumber"></div>
       <div class="controls">
-        <button id="resetGame">Começar o Jogo</button>
+        <button id="resetGame">(Re)Começar o Jogo</button>
         <button id="generateNumber">Sortear Número</button>
       </div>
-
+      <div class="number-called" id="calledNumber"></div>
       <div class="bingo-container">
         <table>
           <thead>
@@ -330,7 +328,7 @@
       function resetGameFunc() {
         // Exibe uma caixa de confirmação para o usuário
         let confirmar = confirm(
-          "Tem certeza que deseja resetar o jogo? Isso apagará o progresso atual."
+          "Tem certeza que deseja zerar o bingo e começar outra rodada?"
         )
 
         // Se o usuário confirmar, executa o reset
