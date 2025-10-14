@@ -1,4 +1,0 @@
-# bingo
-
-bingo
-Atualização
