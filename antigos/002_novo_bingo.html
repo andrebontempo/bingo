@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bingo Eletrônico</title>
+    <link rel="icon" href="images/image.png" type="image/png" />
+    <style>
+      /* ===== BODY & CONTAINER ===== */
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+        background: radial-gradient(circle at center, #1b1f3b, #050816);
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 100vh;
+        padding-top: 20px;
+      }
+
+      .content {
+        width: 70%;
+        max-width: 1200px;
+        background: rgba(15, 15, 35, 0.85);
+        padding: 20px 30px;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
+        text-align: center;
+      }
+
+      @media (max-width: 992px) {
+        .content {
+          width: 90%;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .content {
+          width: 98%;
+          padding: 15px;
+        }
+      }
+
+      /* ===== TITULO ===== */
+      h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        background: linear-gradient(90deg, #00e0ff, #6c63ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: #00e0ff; /* fallback Firefox */
+      }
+
+      /* ===== NÚMERO SORTEADO ===== */
+      .number-called {
+        font-size: 4rem;
+        font-weight: bold;
+        margin: 20px 0;
+        color: #00ffea;
+        text-shadow: 0 0 15px #00e0ff;
+      }
+
+      /* ===== BOTOES ===== */
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      button {
+        font-size: 1.2rem;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #391bfd, #42a1ee);
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s all;
+        box-shadow: 0 0 10px rgba(66, 161, 238, 0.6);
+      }
+
+      button:hover {
+        background: linear-gradient(90deg, #00e0ff, #6c63ff);
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px rgba(0, 224, 255, 0.7);
+      }
+
+      /* ===== TABELA BINGO ===== */
+      .bingo-container {
+        margin-top: 20px;
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        width: 60px;
+        height: 60px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: rgba(0, 0, 0, 0.2);
+        transition: all 0.3s;
+      }
+
+      th {
+        background: linear-gradient(90deg, #00e0ff, #6c63ff);
+        font-size: 1.5rem;
+        color: #fff;
+        text-shadow: 0 0 8px #00e0ff;
+      }
+
+      .highlight {
+        background-color: #5fcfeb !important;
+        color: #fff;
+        animation: pulse 0.5s;
+        box-shadow: 0 0 15px #00e0ff;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      /* ===== RODAPÉ ===== */
+      .made-by {
+        margin-top: 20px;
+        font-size: 1rem;
+        color: #ffde59;
+      }
+
+      /* ===== RESPONSIVIDADE ===== */
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 2.2rem;
+        }
+        .number-called {
+          font-size: 3rem;
+        }
+        button {
+          font-size: 1rem;
+          padding: 8px 20px;
+        }
+        th,
+        td {
+          width: 50px;
+          height: 50px;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="content">
+      <h1>Bingo Eletrônico</h1>
+
+      <div class="controls">
+        <button id="resetGame">Iniciar Jogo</button>
+        <button id="generateNumber">Sortear Número</button>
+      </div>
+
+      <div class="number-called" id="calledNumber">Vamos começar!</div>
+
+      <div class="bingo-container">
+        <table>
+          <thead>
+            <tr>
+              <th>B</th>
+              <th>I</th>
+              <th>N</th>
+              <th>G</th>
+              <th>O</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Células continuam as mesmas -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="made-by">Made By: André Bontempo</div>
+    </div>
+
+    <script>
+      // Lógica do jogo permanece a mesma do seu código original
+      const generateNumber = document.getElementById("generateNumber")
+      const resetGame = document.getElementById("resetGame")
+      const calledNumber = document.getElementById("calledNumber")
+      let calledNumbers = []
+
+      function drawNumber() {
+        if (calledNumbers.length >= 75) {
+          alert("Todos os números já foram sorteados!")
+          return
+        }
+        let number
+        do {
+          number = Math.floor(Math.random() * 75) + 1
+        } while (calledNumbers.includes(number))
+        calledNumbers.push(number)
+        highlightNumber(number)
+        calledNumber.textContent = `${getColumnLetter(number)} ${number}`
+        speakNumber(number)
+      }
+
+      function getColumnLetter(number) {
+        if (number <= 15) return "B"
+        if (number <= 30) return "I"
+        if (number <= 45) return "N"
+        if (number <= 60) return "G"
+        if (number <= 75) return "O"
+      }
+
+      function highlightNumber(number) {
+        document.getElementById(`cell-${number}`)?.classList.add("highlight")
+      }
+
+      function resetGameFunc() {
+        if (confirm("Tem certeza que deseja reiniciar o bingo?")) {
+          calledNumbers = []
+          calledNumber.textContent = "Vamos começar!"
+          document
+            .querySelectorAll(".highlight")
+            .forEach((c) => c.classList.remove("highlight"))
+        }
+      }
+
+      function speakNumber(number) {
+        const utterance = new SpeechSynthesisUtterance(
+          `Número ${getColumnLetter(number)}${number}`
+        )
+        window.speechSynthesis.speak(utterance)
+      }
+
+      generateNumber.addEventListener("click", drawNumber)
+      resetGame.addEventListener("click", resetGameFunc)
+    </script>
+  </body>
+</html>
