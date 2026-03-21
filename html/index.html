@@ -1,245 +1,853 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR" data-theme="dark">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Bingo Eletrônico</title>
-<link rel="icon" href="images/image.png" type="image/png" />
-<style>
-  /* ===== BODY & CONTAINER ===== */
-  body {
-    font-family: "Roboto", sans-serif;
-    margin: 0;
-    padding: 0;
-    background: radial-gradient(circle at center, #1b1f3b, #050816);
-    color: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding-top: 20px;
-  }
+  <meta charset="UTF-8" />
+  <title>BINGO | Futuristic Edition</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;700;900&display=swap"
+    rel="stylesheet">
 
-  .content {
-    width: 70%;
-    max-width: 1200px;
-    background: rgba(15, 15, 35, 0.85);
-    padding: 20px 30px;
-    border-radius: 15px;
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-    text-align: center;
-  }
-
-  @media (max-width: 992px) {
-    .content {
-      width: 90%;
+  <style>
+    :root[data-theme="dark"] {
+      --bg: #020617;
+      --surface: rgba(15, 23, 42, 0.7);
+      --surface-opaque: #0f172a;
+      --primary: #0ea5e9;
+      /* Sky Blue */
+      --accent: #22d3ee;
+      /* Cyan */
+      --secondary: #f43f5e;
+      /* Rose (for old numbers) */
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.1);
+      --glass-bg: rgba(15, 23, 42, 0.4);
+      --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+      --glow: 0 0 20px rgba(14, 165, 233, 0.4);
     }
-  }
 
-  @media (max-width: 576px) {
-    .content {
-      width: 98%;
-      padding: 15px;
+    :root[data-theme="light"] {
+      --bg: #f1f5f9;
+      --surface: rgba(255, 255, 255, 0.7);
+      --surface-opaque: #ffffff;
+      --primary: #0284c7;
+      --accent: #0891b2;
+      --secondary: #e11d48;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: rgba(15, 23, 42, 0.1);
+      --glass-bg: rgba(255, 255, 255, 0.4);
+      --shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.2);
+      --glow: 0 0 20px rgba(2, 132, 199, 0.1);
     }
-  }
 
-  /* ===== TITULO ===== */
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    background: linear-gradient(90deg, #00e0ff, #6c63ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    color: #00e0ff;
-  }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.4s, color 0.4s, border-color 0.4s, transform 0.2s;
+    }
 
-  /* ===== NÚMERO SORTEADO ===== */
-  .number-called {
-    font-size: 4rem;
-    font-weight: bold;
-    margin: 20px 0;
-    color: #00ffea;
-    text-shadow: 0 0 15px #00e0ff;
-    min-height: 60px;
-  }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image:
+        radial-gradient(circle at 20% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.1) 0%, transparent 40%);
+    }
 
-  /* ===== BOTOES ===== */
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin-bottom: 30px;
-  }
+    @media (prefers-reduced-motion: reduce) {
 
-  button {
-    font-size: 1.2rem;
-    padding: 12px 30px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(90deg, #391bfd, #42a1ee);
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s all;
-    box-shadow: 0 0 10px rgba(66, 161, 238, 0.6);
-  }
+      *,
+      ::before,
+      ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
 
-  button:hover {
-    background: linear-gradient(90deg, #00e0ff, #6c63ff);
-    transform: translateY(-2px);
-    box-shadow: 0 0 20px rgba(0, 224, 255, 0.7);
-  }
+    .app-container {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      grid-template-rows: auto 1fr;
+      min-height: 100vh;
+      max-width: 1600px;
+      margin: 0 auto;
+      gap: 24px;
+      padding: 24px;
+    }
 
-  /* ===== TABELA BINGO ===== */
-  .bingo-container {
-    margin-top: 20px;
-    overflow-x: auto;
-  }
+    @media (max-width: 1200px) {
+      .app-container {
+        grid-template-columns: 1fr;
+        height: auto;
+        overflow-y: auto;
+        padding: 16px;
+        gap: 16px;
+        display: flex;
+        flex-direction: column;
+      }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    border-radius: 10px;
-    overflow: hidden;
-  }
+      main,
+      aside {
+        display: contents !important;
+      }
 
-  th, td {
-    width: 60px;
-    height: 60px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #fff;
-    background-color: rgba(0, 0, 0, 0.2);
-    transition: all 0.3s;
-  }
+      /* Sequential Reordering for Mobile */
+      header {
+        order: 1 !important;
+      }
 
-  th {
-    background: linear-gradient(90deg, #00e0ff, #6c63ff);
-    font-size: 1.5rem;
-    color: #fff;
-    text-shadow: 0 0 8px #00e0ff;
-  }
+      .hero-stage {
+        order: 2 !important;
+      }
 
-  .highlight {
-    background-color: #5fcfeb !important;
-    color: #fff;
-    animation: pulse 0.5s;
-    box-shadow: 0 0 15px #00e0ff;
-  }
+      .controls-panel {
+        order: 3 !important;
+      }
 
-  @keyframes pulse {
-    0%,100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-  }
+      .board-glass {
+        order: 4 !important;
+      }
 
-  /* ===== RODAPÉ ===== */
-  .made-by {
-    margin-top: 20px;
-    font-size: 1rem;
-    color: #ffde59;
-  }
+      .history-panel {
+        order: 5 !important;
+      }
+    }
 
-  /* ===== RESPONSIVIDADE ===== */
-  @media (max-width: 600px) {
-    h1 { font-size: 2.2rem; }
-    .number-called { font-size: 3rem; }
-    button { font-size: 1rem; padding: 8px 20px; }
-    th, td { width: 50px; height: 50px; font-size: 1rem; }
-  }
-</style>
+    @media (max-width: 600px) {
+      .app-container {
+        padding: 12px;
+        gap: 12px;
+      }
+    }
+
+    /* HEADER */
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      padding: 16px 32px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    @media (max-width: 800px) {
+      header {
+        padding: 16px;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .logo h1 {
+        font-size: 1.1rem !important;
+      }
+
+      .tabs button {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+    }
+
+    .logo h1 {
+      font-family: 'Syncopate', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+    }
+
+    .tabs button {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s;
+    }
+
+    .tabs button.active {
+      background: var(--surface-opaque);
+      color: var(--accent);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* THEME TOGGLE */
+    #themeToggle {
+      background: var(--surface-opaque);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: var(--shadow);
+    }
+
+    /* MAIN AREA */
+    main {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      min-width: 0;
+    }
+
+    .hero-stage {
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      border-radius: 32px;
+      border: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 400px;
+    }
+
+    @media (max-width: 600px) {
+      .hero-stage {
+        padding: 10px 5px;
+        min-height: 125px;
+        border-radius: 20px;
+      }
+    }
+
+    .hero-stage::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, var(--accent) 40deg, transparent 80deg);
+      animation: rotate 10s linear infinite;
+      opacity: 0.1;
+      z-index: 0;
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .number-display {
+      font-family: 'Syncopate', sans-serif;
+      font-size: clamp(4rem, 20vw, 10rem);
+      font-weight: 900;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--text) 30%, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 15px rgba(14, 165, 233, 0.3));
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+
+    .number-display.pop {
+      animation: cyberPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes cyberPop {
+      0% {
+        transform: scale(0.8) translateY(20px);
+        opacity: 0;
+        filter: blur(10px);
+      }
+
+      100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+        filter: blur(0);
+      }
+    }
+
+    /* GRID */
+    .board-glass {
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-spacing: 8px;
+      border-collapse: separate;
+    }
+
+    th {
+      font-family: 'Syncopate', sans-serif;
+      color: var(--primary);
+      font-size: 0.8rem;
+      padding-bottom: 12px;
+      opacity: 0.8;
+    }
+
+    td {
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 48px;
+      height: 48px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 600px) {
+      .board-glass {
+        padding: 12px;
+        border-radius: 16px;
+      }
+
+      table {
+        border-spacing: 4px;
+      }
+
+      td {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+      }
+    }
+
+    td.highlight {
+      background: linear-gradient(135deg, var(--surface-opaque), var(--bg));
+      color: var(--secondary);
+      border-color: var(--secondary);
+      opacity: 0.9;
+    }
+
+    td.last-called {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: white;
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+      transform: scale(1.15) !important;
+      z-index: 10;
+      position: relative;
+    }
+
+    /* SIDEBAR */
+    aside {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .cyber-panel {
+      background: var(--surface);
+      backdrop-filter: blur(16px);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .cyber-panel h2 {
+      font-family: 'Syncopate', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cyber-panel h2::before {
+      content: '';
+      width: 4px;
+      height: 14px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    /* CONTROLS */
+    .control-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn-cyber {
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 14px;
+      border-radius: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-cyber:hover {
+      background: var(--surface-opaque);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary-cyber {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      color: white;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 900;
+      padding: 18px;
+      margin-top: 8px;
+      box-shadow: 0 10px 20px -10px var(--primary);
+    }
+
+    .btn-primary-cyber:hover {
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      box-shadow: 0 15px 25px -10px var(--primary);
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    .btn-primary-cyber:active {
+      transform: translateY(1px) scale(0.98);
+      background: linear-gradient(90deg, var(--accent), var(--primary));
+    }
+
+    .btn-primary-cyber:focus {
+      outline: none;
+    }
+
+    .voice-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--bg);
+      padding: 4px;
+      border-radius: 14px;
+      margin-top: 10px;
+    }
+
+    .voice-switch button {
+      background: transparent;
+      border: none;
+      padding: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+
+    .voice-switch button.active {
+      background: var(--surface-opaque);
+      color: var(--primary);
+    }
+
+    /* HISTORY */
+    .history-scroll {
+      height: 250px;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .history-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .history-scroll::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 10px;
+    }
+
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .history-num {
+      font-weight: 900;
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+
+    .history-time {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+  </style>
 </head>
 
 <body>
-<div class="content">
-  <h1>Bingo Eletrônico</h1>
+  <div class="app-container">
+    <header>
+      <div class="logo">
+        <h1 id="mainTitle">BINGO - 75</h1>
+      </div>
+      <div class="header-actions">
+        <div class="tabs">
+          <button id="btn60" onclick="switchGame(60,this)">60</button>
+          <button id="btn75" class="active" onclick="switchGame(75,this)">75</button>
+          <button id="btn90" onclick="switchGame(90,this)">90</button>
+        </div>
+        <button id="themeToggle" onclick="toggleTheme()" title="Alternar Tema">🌙</button>
+      </div>
+    </header>
 
-  <div class="controls">
-    <button id="resetGame">Iniciar Jogo</button>
-    <button id="generateNumber">Sortear Número</button>
+    <main>
+      <div class="hero-stage">
+        <div id="calledNumber" class="number-display">--</div>
+      </div>
+
+      <div class="board-glass">
+        <table>
+          <thead>
+            <tr id="headerRow"></tr>
+          </thead>
+          <tbody id="bingoBody"></tbody>
+        </table>
+      </div>
+    </main>
+
+    <aside>
+      <section class="cyber-panel controls-panel">
+        <h2>Controles</h2>
+        <div class="control-stack">
+          <button class="btn-cyber" onclick="resetGame()">♻️ Reiniciar</button>
+          <button id="btnAutoNorm" class="btn-cyber" onclick="startAuto(5000)">⚡ Auto 5s</button>
+          <button id="btnAutoSlow" class="btn-cyber" onclick="startAuto(8000)">🐢 Auto 8s</button>
+          <button id="btnDraw" class="btn-cyber btn-primary-cyber" onclick="drawNumber()">Sorteio</button>
+          <button id="btnStop" class="btn-cyber btn-primary-cyber" style="display:none" onclick="stopAuto()">⏹ Parar</button>
+        </div>
+        <div class="voice-switch">
+          <button id="maleBtn" class="active" onclick="setVoice('male')">Voz 1</button>
+          <button id="femaleBtn" onclick="setVoice('female')">Voz 2</button>
+        </div>
+      </section>
+
+      <section class="cyber-panel history-panel">
+        <h2>Histórico</h2>
+        <div class="history-scroll" id="historyList"></div>
+      </section>
+    </aside>
   </div>
 
-  <div class="number-called" id="calledNumber">Vamos começar!</div>
+  <script>
+    /* CONFIG */
+    const games = {
+      60: { max: 60 },
+      75: { cols: ["B", "I", "N", "G", "O"], rows: 15, max: 75 },
+      90: { cols: ["B", "I", "N", "G", "O"], rows: 18, max: 90 },
+    }
 
-  <div class="bingo-container">
-    <table>
-      <thead>
-        <tr>
-          <th>B</th>
-          <th>I</th>
-          <th>N</th>
-          <th>G</th>
-          <th>O</th>
-        </tr>
-      </thead>
-      <tbody id="bingoBody"></tbody>
-    </table>
-  </div>
+    let currentGame = 75
+    let state = {
+      60: { called: [], history: [] },
+      75: { called: [], history: [] },
+      90: { called: [], history: [] },
+    }
+    let autoTimer = null
 
-  <div class="made-by">Made By: André Bontempo</div>
-</div>
+    /* THEME */
+    function toggleTheme() {
+      const root = document.documentElement
+      const currentTheme = root.getAttribute("data-theme")
+      const newTheme = currentTheme === "dark" ? "light" : "dark"
+      root.setAttribute("data-theme", newTheme)
+      document.getElementById("themeToggle").textContent = newTheme === "dark" ? "🌙" : "☀️"
+    }
 
-<script>
-const tbody = document.getElementById("bingoBody");
-for (let row = 0; row < 15; row++) {
-  const tr = document.createElement("tr");
-  for (let col = 0; col < 5; col++) {
-    const number = row + 1 + col*15;
-    const td = document.createElement("td");
-    td.id = `cell-${number}`;
-    td.textContent = number;
-    tr.appendChild(td);
-  }
-  tbody.appendChild(tr);
-}
+    /* VOZ (Chrome Optimization) */
+    let voices = []
+    let selectedVoiceType = "male"
+    let currentVoice = null
 
-// ===== Lógica do bingo =====
-const generateNumber = document.getElementById("generateNumber");
-const resetGame = document.getElementById("resetGame");
-const calledNumber = document.getElementById("calledNumber");
-let calledNumbers = [];
+    function loadVoices() {
+      voices = window.speechSynthesis.getVoices()
+      if (voices.length > 0) {
+        selectVoice()
+        console.log("Bingo: Voices loaded and selected:", currentVoice ? currentVoice.name : "None")
+      }
+    }
 
-function drawNumber() {
-  if(calledNumbers.length>=75){ alert("Todos os números já foram sorteados!"); return; }
-  let number;
-  do{ number=Math.floor(Math.random()*75)+1; } while(calledNumbers.includes(number));
-  calledNumbers.push(number);
-  highlightNumber(number);
-  calledNumber.textContent = `${getColumnLetter(number)} ${number}`;
-  speakNumber(number);
-}
+    function initVoices() {
+      if (typeof window.speechSynthesis === 'undefined') return;
 
-function getColumnLetter(number){
-  if(number<=15) return "B";
-  if(number<=30) return "I";
-  if(number<=45) return "N";
-  if(number<=60) return "G";
-  return "O";
-}
+      loadVoices()
+      if (window.speechSynthesis.onvoiceschanged !== undefined) {
+        window.speechSynthesis.onvoiceschanged = loadVoices
+      }
 
-function highlightNumber(number){
-  document.getElementById(`cell-${number}`)?.classList.add("highlight");
-}
+      // Chrome Fallback: poll for voices if not loaded immediately
+      let attempts = 0
+      const poll = setInterval(() => {
+        if (voices.length > 0 || attempts > 8) {
+          clearInterval(poll)
+        } else {
+          loadVoices()
+          attempts++
+        }
+      }, 500)
+    }
+    initVoices()
 
-function resetGameFunc(){
-  if(confirm("Tem certeza que deseja reiniciar o bingo?")){
-    calledNumbers=[];
-    calledNumber.textContent="Vamos começar!";
-    document.querySelectorAll(".highlight").forEach(c=>c.classList.remove("highlight"));
-  }
-}
+    function selectVoice() {
+      if (voices.length === 0) return
 
-function speakNumber(number){
-  const utterance = new SpeechSynthesisUtterance(`Número ${getColumnLetter(number)}${number}`);
-  window.speechSynthesis.speak(utterance);
-}
+      const targetLang = "pt-BR"
 
-generateNumber.addEventListener("click", drawNumber);
-resetGame.addEventListener("click", resetGameFunc);
-</script>
+      // Priority for natural sounding voices
+      let filtered = voices.filter(v => v.lang.startsWith(targetLang))
+      if (filtered.length === 0) filtered = voices.filter(v => v.lang.startsWith("pt"))
+      if (filtered.length === 0) filtered = voices
+
+      const maleNames = ["daniel", "ricardo", "antonio", "felipe", "filipe", "guilherme", "arthur", "gabriel", "vicente", "paulo", "manoel"]
+      const femaleNames = ["maria", "luciana", "heloisa", "vitoria", "victoria", "leticia", "fernanda", "ana", "google português"]
+
+      if (selectedVoiceType === "female") {
+        currentVoice = filtered.find(v => femaleNames.some(n => v.name.toLowerCase().includes(n)))
+          || filtered.find(v => v.name.toLowerCase().includes("female"))
+          || filtered[0]
+      } else {
+        // Busca agressiva por voz masculina
+        currentVoice = filtered.find(v => maleNames.some(n => v.name.toLowerCase().includes(n)))
+          || filtered.find(v => v.name.toLowerCase().includes("male") && !v.name.toLowerCase().includes("female"))
+          // Tenta pegar qualquer uma que NÃO esteja na lista de nomes femininos conhecidos
+          || filtered.find(v => !femaleNames.some(n => v.name.toLowerCase().includes(n)))
+          || filtered[0]
+      }
+
+      console.log("Bingo: Voz selecionada (" + selectedVoiceType + "):", currentVoice ? currentVoice.name : "Nenhuma")
+    }
+
+    function setVoice(type) {
+      selectedVoiceType = type
+      selectVoice()
+      document.getElementById("maleBtn").classList.toggle("active", type === "male")
+      document.getElementById("femaleBtn").classList.toggle("active", type === "female")
+    }
+
+    function speak(text) {
+      if (!currentVoice) selectVoice()
+      if (!currentVoice) return
+
+      window.speechSynthesis.cancel()
+      const u = new SpeechSynthesisUtterance(text)
+      u.voice = currentVoice
+      u.lang = currentVoice.lang
+
+      // Quality Tuning: Slightly slower and natural pitch
+      // Male: slower and deeper | Female: slightly higher/standard
+      u.rate = selectedVoiceType === "female" ? 0.95 : 0.85
+      u.pitch = selectedVoiceType === "female" ? 1.0 : 0.75
+      u.volume = 1.0
+
+      window.speechSynthesis.speak(u)
+    }
+
+    /* RENDER */
+    function switchGame(size, btn) {
+      stopAuto()
+      currentGame = size
+      state[currentGame] = { called: [], history: [] } // Auto Reset
+      document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("active"))
+      btn.classList.add("active")
+      renderBoard()
+    }
+
+    function renderBoard() {
+      const h = document.getElementById("headerRow"), b = document.getElementById("bingoBody")
+      h.innerHTML = ""; b.innerHTML = ""
+
+      // Update Title dynamically
+      document.getElementById("mainTitle").textContent = `BINGO - ${currentGame}`
+
+      if (currentGame === 60) {
+        for (let i = 1; i <= 10; i++) { const th = document.createElement("th"); th.textContent = i; h.appendChild(th); }
+        for (let r = 0; r < 6; r++) {
+          const tr = document.createElement("tr")
+          for (let c = 1; c <= 10; c++) {
+            const n = r * 10 + c, td = document.createElement("td")
+            td.textContent = n; td.id = `cell-60-${n}`
+            if (state[60].called.includes(n)) td.classList.add("highlight")
+            tr.appendChild(td)
+          }
+          b.appendChild(tr)
+        }
+      } else {
+        const cfg = games[currentGame]
+        cfg.cols.forEach(c => { const th = document.createElement("th"); th.textContent = c; h.appendChild(th); })
+        for (let r = 1; r <= cfg.rows; r++) {
+          const tr = document.createElement("tr")
+          for (let c = 0; c < cfg.cols.length; c++) {
+            const n = r + c * cfg.rows, td = document.createElement("td")
+            if (n <= cfg.max) {
+              td.textContent = n; td.id = `cell-${currentGame}-${n}`
+              if (state[currentGame].called.includes(n)) td.classList.add("highlight")
+            }
+            tr.appendChild(td)
+          }
+          b.appendChild(tr)
+        }
+      }
+      updateHistory()
+      document.getElementById("calledNumber").innerHTML = "--"
+    }
+
+    function drawNumber() {
+      const cfg = games[currentGame], s = state[currentGame]
+      if (s.called.length >= cfg.max) { stopAuto(); alert("Todos os números sorteados!"); return; }
+
+      let n
+      do { n = Math.floor(Math.random() * cfg.max) + 1 } while (s.called.includes(n))
+
+      document.querySelector('.last-called')?.classList.remove('last-called')
+      s.called.push(n)
+
+      let displayHTML = ""
+      let speakText = ""
+      let historyText = ""
+
+      if (currentGame === 60) {
+        displayHTML = n
+        speakText = `Número ${n}.`
+        historyText = n
+      } else {
+        const letter = cfg.cols[Math.floor((n - 1) / cfg.rows)]
+        displayHTML = `${letter} ${n}`
+        speakText = `${letter}. ${n}.`
+        historyText = `${letter} ${n}`
+      }
+
+      const el = document.getElementById("calledNumber")
+      el.textContent = displayHTML
+      el.classList.remove("pop")
+      void el.offsetWidth; el.classList.add("pop")
+
+      const cell = document.getElementById(`cell-${currentGame}-${n}`)
+      if (cell) {
+        cell.classList.add("highlight")
+        cell.classList.add("last-called")
+      }
+
+      s.history.unshift({ val: historyText, time: new Date().toLocaleTimeString() })
+      updateHistory()
+      speak(speakText)
+    }
+
+    function updateHistory() {
+      const list = document.getElementById("historyList")
+      list.innerHTML = state[currentGame].history
+        .map(item => `
+            <div class="history-row">
+              <span class="history-num">${item.val}</span>
+              <span class="history-time">${item.time}</span>
+            </div>
+          `).join("")
+    }
+
+    function resetGame() {
+      if (!confirm("Reiniciar este bingo?")) return
+      state[currentGame] = { called: [], history: [] }
+      renderBoard()
+    }
+
+    function startAuto(interval) {
+      stopAuto(); 
+      document.getElementById("btnStop").style.display = "flex";
+      document.getElementById("btnDraw").style.display = "none";
+      autoTimer = setInterval(drawNumber, interval);
+    }
+    function stopAuto() {
+      clearInterval(autoTimer);
+      autoTimer = null;
+      document.getElementById("btnStop").style.display = "none";
+      document.getElementById("btnDraw").style.display = "flex";
+    }
+
+    renderBoard()
+  </script>
 </body>
+
 </html>
