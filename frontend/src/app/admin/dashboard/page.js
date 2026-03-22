@@ -299,7 +299,7 @@ export default function AdminDashboard() {
               </div>
             </section>
             
-            <section className="cyber-panel text-center">
+            <section className="cyber-panel qr-panel text-center">
               <h2 className="text-light fw-bold">QR Code</h2>
               <div className="d-flex justify-content-center p-3 bg-white mx-auto my-3" style={{ borderRadius: '16px', maxWidth: '240px' }}>
                 <QRCodeSVG value={`${frontendUrl}/jogar?room=${roomId}`} size={200} />
@@ -307,7 +307,7 @@ export default function AdminDashboard() {
               <p className="small text-light mb-0">Jogadores entram apenas escaneando.</p>
             </section>
 
-            <section className="cyber-panel mt-4 mb-4">
+            <section className="cyber-panel history-panel mt-4 mb-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h2 className="text-light fw-bold m-0">Histórico</h2>
                 <span className="badge" style={{ background: 'var(--accent)', fontSize: '0.8rem' }}>{calledNumbers.length} bolas</span>

@@ -161,8 +161,8 @@ export default function PlayerHome() {
             
             <div className="d-flex flex-sm-row flex-column gap-3 w-100">
               <button 
-                className="btn-cyber bg-transparent border-warning text-warning flex-grow-1 py-3 fw-bold shadow-sm" 
-                style={{ fontSize: '1.2rem', borderRadius: '12px' }} 
+                className="btn-cyber btn-warning-cyber flex-grow-1 py-3 m-0 shadow-sm" 
+                style={{ fontSize: '1.5rem', borderRadius: '12px' }} 
                 onClick={() => socket && socket.emit('linha_called', { roomId, playerName: name, cardNumbers: cartela })}>
                 LINHA!
               </button>

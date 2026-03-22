@@ -124,6 +124,10 @@
       .history-panel {
         order: 5 !important;
       }
+
+      .qr-panel {
+        order: 6 !important;
+      }
     }
 
     @media (max-width: 600px) {
@@ -484,6 +488,27 @@
 
     .btn-primary-cyber:focus {
       outline: none;
+    }
+
+    .btn-warning-cyber {
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      color: white;
+      border: none;
+      font-size: 1.1rem;
+      font-weight: 900;
+      padding: 18px;
+      margin-top: 8px;
+      box-shadow: 0 10px 20px -10px rgba(245, 158, 11, 0.4);
+    }
+
+    .btn-warning-cyber:hover {
+      background: linear-gradient(90deg, #fbbf24, #f59e0b);
+      box-shadow: 0 15px 25px -10px rgba(245, 158, 11, 0.5);
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    .btn-warning-cyber:active {
+      transform: translateY(1px) scale(0.98);
     }
 
     .voice-switch {
