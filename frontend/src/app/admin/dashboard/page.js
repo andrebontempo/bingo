@@ -375,115 +375,123 @@ export default function AdminDashboard() {
                 </span>
               </h1>
               <div className="d-flex gap-2">
-                 <button className="btn btn-outline-info" onClick={() => {
+                 <button className="btn btn-outline-info fw-bold" onClick={() => {
                    setRoomId(null);
                  }}>PAINEL GERAL</button>
               </div>
             </header>
             
-            <main>
-            <div className="hero-stage mb-4">
-              <div className="number-display pop text-center">
-                {getDisplayNumber(lastDrawn, gameMode)}
-              </div>
-            </div>
-            <div className="board-glass">
-              <table className="w-100">
-                <thead>
-                  {(gameMode === 75 || gameMode === 90) && (
-                    <tr>{["B", "I", "N", "G", "O"].map(c => <th key={c} className="text-center fs-5 pb-3 w-20">{c}</th>)}</tr>
-                  )}
-                  {(gameMode !== 75 && gameMode !== 90) && (
-                    <tr>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(c => <th key={c} className="text-center fs-6 pb-2">{c}</th>)}</tr>
-                  )}
-                </thead>
-                <tbody>{renderCols()}</tbody>
-              </table>
-            </div>
-          </main>
-
-          <aside>
-            <section className="cyber-panel controls-panel mb-4">
-              <h2 className="mb-3 text-light fw-bold">Comandos</h2>
-              <div className="control-stack d-flex flex-column gap-2">
-                <button className="btn-cyber bg-transparent text-white border-secondary rounded-3 py-2 mb-1" onClick={resetGame}>♻️ Novo Bingo</button>
-
-                <div className="d-flex gap-2">
-                  <button className={`btn-cyber flex-grow-1 rounded-3 py-2 ${autoMode === 5000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(5000)}>
-                    ⚡ Auto 5s
-                  </button>
-                  <button className={`btn-cyber flex-grow-1 rounded-3 py-2 ${autoMode === 8000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(8000)}>
-                    🐢 Auto 8s
-                  </button>
-                </div>
-
-                {autoMode > 0 ? (
-                  <button className="btn-cyber border-danger text-danger bg-transparent rounded-3 w-100 py-3 mt-2 mb-2 fw-bold" onClick={() => setAutoMode(0)}>
-                    ⏹ Parar Sorteio Auto
-                  </button>
-                ) : (
-                  <button className="btn-cyber btn-primary-cyber rounded-3 w-100 py-3 mt-2 mb-2 fw-bold" onClick={drawNumber} style={{ fontSize: '1.2rem' }}>
-                    SORTEAR BOLA
-                  </button>
-                )}
-
-                <div className="voice-switch w-100 m-0 border border-secondary shadow-sm rounded-3 mt-2">
-                  <button className={selectedVoiceType === 'male' ? 'active' : ''} onClick={() => setSelectedVoiceType('male')}>Voz 1</button>
-                  <button className={selectedVoiceType === 'female' ? 'active' : ''} onClick={() => setSelectedVoiceType('female')}>Voz 2</button>
-                </div>
-              </div>
-            </section>
-
-            <section className="cyber-panel qr-panel text-center">
-              <h2 className="text-light fw-bold">QR Code</h2>
-              <div className="d-flex justify-content-center p-3 bg-white mx-auto my-3" style={{ borderRadius: '16px', maxWidth: '240px' }}>
-                <QRCodeSVG value={`${frontendUrl}/jogar?room=${roomId}`} size={200} />
-              </div>
-              <p className="small text-light mb-0">Jogadores entram apenas escaneando.</p>
-            </section>
-
-            <section className="cyber-panel players-panel mt-4 overflow-hidden">
-               <div className="d-flex justify-content-between align-items-center mb-3">
-                 <h2 className="text-light fw-bold m-0">Jogadores</h2>
-                 <span className="badge bg-info" style={{ fontSize: '0.8rem' }}>{players.length}</span>
-               </div>
-               <div className="d-flex flex-wrap gap-2" style={{ maxHeight: '150px', overflowY: 'auto' }}>
-                 {players.length > 0 ? (
-                   players.map((p, i) => (
-                     <span key={i} className="badge bg-dark border border-secondary text-light px-3 py-2" style={{ borderRadius: '12px', fontSize: '0.85rem' }}>
-                       👤 {p.name}
-                     </span>
-                   ))
-                 ) : (
-                   <p className="text-light opacity-50 small mb-0 w-100 text-center">Nenhum jogador na sala.</p>
-                 )}
-               </div>
-            </section>
-
-            <section className="cyber-panel history-panel mt-4 mb-4">
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2 className="text-light fw-bold m-0">Histórico</h2>
-                <span className="badge" style={{ background: 'var(--accent)', fontSize: '0.8rem' }}>{calledNumbers.length} bolas</span>
-              </div>
-
-              {history.length > 0 ? (
-                <div className="d-flex flex-column gap-2" style={{ maxHeight: '250px', overflowY: 'auto', paddingRight: '10px' }}>
-                  {history.map((item, idx) => (
-                    <div key={idx} className="d-flex justify-content-between align-items-center rounded-3 bg-dark border shadow-sm px-3 py-2" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                      <strong className="text-white" style={{ fontSize: '1.2rem', letterSpacing: '1px' }}>
-                        {getDisplayNumber(item.number, gameMode)}
-                      </strong>
-                      <span className="text-info opacity-75 small" style={{ fontFamily: 'monospace' }}>{item.time}</span>
+            <Row className="g-4">
+              {/* LADO ESQUERDO: SORTEIO E TABELA */}
+              <Col lg={8}>
+                <main>
+                  <div className="hero-stage mb-4">
+                    <div className="number-display pop text-center">
+                      {getDisplayNumber(lastDrawn, gameMode)}
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-light opacity-50 small mb-0 text-center py-2">O sorteio ainda não iniciou.</p>
-              )}
-            </section>
-          </aside>
-        </>
-      )}
+                  </div>
+                  <div className="board-glass p-3">
+                    <table className="w-100">
+                      <thead>
+                        {(gameMode === 75 || gameMode === 90) && (
+                          <tr>{["B", "I", "N", "G", "O"].map(c => <th key={c} className="text-center fs-5 pb-3 w-20 text-primary">{c}</th>)}</tr>
+                        )}
+                        {(gameMode !== 75 && gameMode !== 90) && (
+                          <tr>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(c => <th key={c} className="text-center fs-6 pb-2 text-primary">{c}</th>)}</tr>
+                        )}
+                      </thead>
+                      <tbody>{renderCols()}</tbody>
+                    </table>
+                  </div>
+                </main>
+              </Col>
+
+              {/* LADO DIREITO: CONTROLES E INFORMAÇÕES */}
+              <Col lg={4}>
+                <aside className="d-flex flex-column gap-4">
+                  <section className="cyber-panel controls-panel">
+                    <h2 className="mb-3 text-light fw-bold fs-6 opacity-75" style={{ fontFamily: 'var(--font-syncopate)' }}>COMANDOS</h2>
+                    <div className="control-stack d-flex flex-column gap-2">
+                      <button className="btn btn-outline-secondary text-white border-secondary rounded-3 py-2 mb-1 small" onClick={resetGame}>♻️ Novo Bingo</button>
+
+                      <div className="d-flex gap-2">
+                        <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 5000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(5000)}>
+                          ⚡ Auto 5s
+                        </button>
+                        <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 8000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(8000)}>
+                          🐢 Auto 8s
+                        </button>
+                      </div>
+
+                      {autoMode > 0 ? (
+                        <button className="btn-cyber border-danger text-danger bg-transparent rounded-3 w-100 py-3 mt-2 mb-2 fw-bold" onClick={() => setAutoMode(0)}>
+                          ⏹ Parar Sorteio Auto
+                        </button>
+                      ) : (
+                        <button className="btn-cyber btn-primary-cyber rounded-3 w-100 py-3 mt-2 mb-2 fw-bold" onClick={drawNumber} style={{ fontSize: '1.2rem' }}>
+                          SORTEAR BOLA
+                        </button>
+                      )}
+
+                      <div className="d-flex gap-2 voice-switch w-100 mt-2 border border-secondary shadow-sm rounded-3">
+                        <button className={`flex-grow-1 py-1 ${selectedVoiceType === 'male' ? 'active' : ''}`} style={{ background: selectedVoiceType === 'male' ? 'var(--primary)' : 'transparent', border: 'none', color: 'white' }} onClick={() => setSelectedVoiceType('male')}>Voz 1</button>
+                        <button className={`flex-grow-1 py-1 ${selectedVoiceType === 'female' ? 'active' : ''}`} style={{ background: selectedVoiceType === 'female' ? 'var(--primary)' : 'transparent', border: 'none', color: 'white' }} onClick={() => setSelectedVoiceType('female')}>Voz 2</button>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="cyber-panel qr-panel text-center">
+                    <h2 className="text-light fw-bold fs-6 opacity-75 mb-3" style={{ fontFamily: 'var(--font-syncopate)' }}>QR CODE</h2>
+                    <div className="d-flex justify-content-center p-2 bg-white mx-auto my-2" style={{ borderRadius: '16px', maxWidth: '200px' }}>
+                      <QRCodeSVG value={`${frontendUrl}/jogar?room=${roomId}`} size={160} />
+                    </div>
+                    <p className="very-small text-light mb-0 opacity-50">Jogadores entram apenas escaneando.</p>
+                  </section>
+
+                  <section className="cyber-panel players-panel overflow-hidden">
+                     <div className="d-flex justify-content-between align-items-center mb-3">
+                       <h2 className="text-light fw-bold fs-6 opacity-75 m-0" style={{ fontFamily: 'var(--font-syncopate)' }}>JOGADORES</h2>
+                       <span className="badge bg-info">{players.length}</span>
+                     </div>
+                     <div className="d-flex flex-wrap gap-2" style={{ maxHeight: '120px', overflowY: 'auto' }}>
+                       {players.length > 0 ? (
+                         players.map((p, i) => (
+                           <span key={i} className="badge bg-dark border border-secondary text-light px-2 py-1" style={{ borderRadius: '8px', fontSize: '0.75rem' }}>
+                             👤 {p.name}
+                           </span>
+                         ))
+                       ) : (
+                         <p className="text-light opacity-50 small mb-0 w-100 text-center">Aguardando...</p>
+                       )}
+                     </div>
+                  </section>
+
+                  <section className="cyber-panel history-panel">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                      <h2 className="text-light fw-bold fs-6 opacity-75 m-0" style={{ fontFamily: 'var(--font-syncopate)' }}>HISTÓRICO</h2>
+                      <span className="badge" style={{ background: 'var(--accent)' }}>{calledNumbers.length} bolas</span>
+                    </div>
+
+                    {history.length > 0 ? (
+                      <div className="d-flex flex-column gap-2" style={{ maxHeight: '200px', overflowY: 'auto', paddingRight: '10px' }}>
+                        {history.map((item, idx) => (
+                          <div key={idx} className="d-flex justify-content-between align-items-center rounded-2 bg-dark border shadow-sm px-2 py-1" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                            <strong className="text-white" style={{ fontSize: '1rem' }}>
+                              {getDisplayNumber(item.number, gameMode)}
+                            </strong>
+                            <span className="text-info opacity-75 small" style={{ fontFamily: 'monospace', fontSize: '0.7rem' }}>{item.time}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-light opacity-50 small mb-0 text-center py-2">Sem bolas.</p>
+                    )}
+                  </section>
+                </aside>
+              </Col>
+            </Row>
+          </>
+        )}
       </Container>
     </div>
   );
