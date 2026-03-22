@@ -2,10 +2,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Chave secreta do Super Admin (só precisa de rebuild do frontend para mudar)
+const SUPER_KEY = "bingo@SA2025";
+
 export default function SuperAdminLogin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [secretKey, setSecretKey] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -14,39 +18,28 @@ export default function SuperAdminLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
+
+    // Valida a chave secreta ANTES de chamar o backend
+    if (secretKey !== SUPER_KEY) {
+      setError("Chave secreta inválida.");
+      return;
+    }
+
     setLoading(true);
     try {
-      // Step 1: Login with credentials
       const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
+
       if (!res.ok) {
         setError(data.message || "Credenciais inválidas.");
         return;
       }
 
-      // Step 2: Verify superadmin role
-      // First check if role is in login response (new backend)
-      if (data.role && data.role !== "superadmin") {
-        setError("Acesso negado. Apenas Super Admins podem entrar aqui.");
-        return;
-      }
-
-      // If role not in response (old backend), verify via /api/auth/all
-      if (!data.role) {
-        const verifyRes = await fetch(`${baseUrl}/api/auth/all`, {
-          headers: { Authorization: `Bearer ${data.token}` },
-        });
-        if (!verifyRes.ok) {
-          setError("Acesso negado. Apenas Super Admins podem entrar aqui.");
-          return;
-        }
-      }
-
-      // Step 3: Grant access
+      // Acesso garantido: chave secreta + credenciais válidas
       localStorage.setItem("superAdminData", JSON.stringify({ ...data, role: "superadmin" }));
       router.push("/superadmin/dashboard");
     } catch {
@@ -93,7 +86,7 @@ export default function SuperAdminLogin() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="superadmin@bingo.com"
+              placeholder="seu@email.com"
               className="w-100 rounded-3 px-3 py-2 text-white"
               style={{
                 background: "rgba(255,255,255,0.07)",
@@ -115,6 +108,23 @@ export default function SuperAdminLogin() {
               style={{
                 background: "rgba(255,255,255,0.07)",
                 border: "1px solid rgba(239,68,68,0.3)",
+                outline: "none",
+                fontSize: "0.95rem",
+              }}
+            />
+          </div>
+          <div>
+            <label className="text-white opacity-60 small mb-1 d-block">Chave Secreta</label>
+            <input
+              type="password"
+              required
+              value={secretKey}
+              onChange={(e) => setSecretKey(e.target.value)}
+              placeholder="••••••••••••"
+              className="w-100 rounded-3 px-3 py-2 text-white"
+              style={{
+                background: "rgba(255,255,255,0.04)",
+                border: "1px solid rgba(239,68,68,0.5)",
                 outline: "none",
                 fontSize: "0.95rem",
               }}
