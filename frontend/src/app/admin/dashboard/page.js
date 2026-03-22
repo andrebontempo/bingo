@@ -293,88 +293,95 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="app-container pt-4">
-      <header className="d-flex justify-content-between align-items-center w-100 flex-wrap gap-3 mb-4">
-        <h1 id="mainTitle" className="mb-0 text-light fw-bold d-flex align-items-center flex-wrap gap-3" style={{ letterSpacing: '1px', fontSize: 'clamp(1.5rem, 4vw, 2rem)' }}>
-          {roomId ? (
-            <>
-              Sala Aberta
-              <span className="ms-2 text-info" style={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)' }}>
-                | Cód: {roomId}
-              </span>
-            </>
-          ) : (
-            <>
-              PAINEL DE CONTROLE
-              <span className="ms-1 text-white border-start ps-3 small opacity-75" style={{ fontSize: '0.6em', textTransform: 'capitalize', fontWeight: '300' }}>
-                Organizador: {admin?.email?.split('@')[0].replace('.', ' ')}
-              </span>
-            </>
-          )}
-        </h1>
-        <div className="tabs pt-2 pt-md-0">
-          {[30, 75, 80, 90].map(m => (
-            <button key={m} className={gameMode === m ? "active" : ""} onClick={() => switchMode(m)}>{m}</button>
-          ))}
-        </div>
-      </header>
-
-      {!roomId ? (
-        <Container fluid="lg" className="mt-4">
-          <Row className="justify-content-center g-5">
-            <Col lg={6}>
-              <div className="board-glass p-4 p-md-5 text-center d-flex flex-column align-items-center justify-content-center h-100" style={{ borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                <div className="mb-4 text-info opacity-75">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm2 7a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-1.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
-                    <path d="M14 2H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zM2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2z" />
-                  </svg>
-                </div>
-                <h2 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)' }}>ESTAÇÃO BINGO</h2>
-                <p className="text-light opacity-75 mb-5 fs-5">
-                  Selecione a quantidade de dezenas na aba superior e ligue os motores virtuais para iniciar a sala!
-                </p>
-                <button className="btn-cyber btn-primary-cyber px-5 py-4 w-100 fw-bold rounded-4" style={{ fontSize: '1.4rem', letterSpacing: '2px', boxShadow: '0 0 20px rgba(14, 165, 233, 0.4)' }} onClick={createRoom}>
-                  INICIAR SALA ({gameMode} Bolas)
-                </button>
-                <p className="mt-4 mb-0 text-light opacity-50 small">
-                  O sistema gerará simultaneamente o Código Criptográfico e o QR Code temporário para acesso instantâneo.
-                </p>
+    <div className="min-vh-100" style={{ background: 'var(--bg-dark)', color: 'white' }}>
+      <Container fluid="lg" className="py-4 py-md-5">
+        {!roomId ? (
+          <>
+            {/* TAG 1: HEADER (ORDEM 1 NO CELULAR) */}
+            <header className="d-flex justify-content-between align-items-center w-100 flex-wrap gap-3 mb-5 border-bottom border-secondary border-opacity-25 pb-4 order-1">
+              <h1 id="mainTitle" className="mb-0 text-light fw-bold d-flex align-items-center flex-wrap gap-3" style={{ letterSpacing: '1px', fontSize: 'clamp(1.5rem, 4vw, 2rem)' }}>
+                PAINEL DE CONTROLE
+                <span className="ms-1 text-white border-start ps-3 small opacity-75" style={{ fontSize: '0.6em', textTransform: 'capitalize', fontWeight: '300' }}>
+                  Organizador: {admin?.email?.split('@')[0].replace('.', ' ')}
+                </span>
+              </h1>
+              <div className="tabs pt-2 pt-md-0">
+                {[30, 75, 80, 90].map(m => (
+                  <button key={m} className={gameMode === m ? "active" : ""} onClick={() => switchMode(m)}>{m}</button>
+                ))}
               </div>
-            </Col>
+            </header>
 
-            <Col lg={5}>
-              <div className="cyber-panel p-4 h-100" style={{ border: '1px solid var(--border)', borderRadius: '24px' }}>
-                <h3 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1rem' }}>SUAS SALAS / STATUS</h3>
-                <div className="d-flex flex-column gap-3" style={{ maxHeight: '420px', overflowY: 'auto' }}>
-                    {adminRooms.length > 0 ? (
-                      adminRooms.map(r => (
-                        <div key={r.roomId} className="p-3 border rounded-3 d-flex justify-content-between align-items-center bg-dark" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                          <div>
-                              <div className="text-info fw-bold small">SALA: {r.roomId}</div>
-                              <div className="text-white small opacity-75">{r.gameMode} Bolas • {r.players?.length || 0} Jogadores</div>
-                              <div className="badge bg-secondary mt-1" style={{ fontSize: '0.6rem' }}>{r.status === 'playing' ? 'EM JOGO' : 'ESPERANDO'}</div>
+            <Row className="justify-content-center g-5">
+              {/* TAG 2: ESTAÇÃO BINGO (ORDEM 2 NO CELULAR) */}
+              <Col lg={6} className="order-2">
+                <div className="board-glass p-4 p-md-5 text-center d-flex flex-column align-items-center justify-content-center h-100" style={{ borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                  <div className="mb-4 text-info opacity-75">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm2 7a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-1.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                      <path d="M14 2H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zM2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2z" />
+                    </svg>
+                  </div>
+                  <h2 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)' }}>ESTAÇÃO BINGO</h2>
+                  <p className="text-light opacity-75 mb-5 fs-5">
+                    Selecione a quantidade de dezenas na aba superior e ligue os motores virtuais para iniciar a sala!
+                  </p>
+                  <button className="btn-cyber btn-primary-cyber px-5 py-4 w-100 fw-bold rounded-4" style={{ fontSize: '1.4rem', letterSpacing: '2px', boxShadow: '0 0 20px rgba(14, 165, 233, 0.4)' }} onClick={createRoom}>
+                    INICIAR SALA ({gameMode} Bolas)
+                  </button>
+                  <p className="mt-4 mb-0 text-light opacity-50 small">
+                    O sistema gerará simultaneamente o Código Criptográfico e o QR Code temporário para acesso instantâneo.
+                  </p>
+                </div>
+              </Col>
+
+              {/* TAG 3: SUAS SALAS / STATUS (ORDEM 3 NO CELULAR) */}
+              <Col lg={5} className="order-3">
+                <div className="cyber-panel p-4 h-100" style={{ border: '1px solid var(--border)', borderRadius: '24px' }}>
+                  <h3 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1rem' }}>SUAS SALAS / STATUS</h3>
+                  <div className="d-flex flex-column gap-3" style={{ maxHeight: '420px', overflowY: 'auto' }}>
+                      {adminRooms.length > 0 ? (
+                        adminRooms.map(r => (
+                          <div key={r.roomId} className="p-3 border rounded-3 d-flex justify-content-between align-items-center bg-dark" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                            <div>
+                                <div className="text-info fw-bold small">SALA: {r.roomId}</div>
+                                <div className="text-white small opacity-75">{r.gameMode} Bolas • {r.players?.length || 0} Jogadores</div>
+                                <div className="badge bg-secondary mt-1" style={{ fontSize: '0.6rem' }}>{r.status === 'playing' ? 'EM JOGO' : 'ESPERANDO'}</div>
+                            </div>
+                            <div className="d-flex gap-2">
+                               <button className="btn btn-sm btn-info fw-bold" onClick={() => resumeRoom(r.roomId)}>RETOMAR</button>
+                               <button className="btn btn-sm btn-outline-danger" onClick={() => closeRoomManually(r.roomId)}>FECHAR</button>
+                            </div>
                           </div>
-                          <div className="d-flex gap-2">
-                             <button className="btn btn-sm btn-info fw-bold" onClick={() => resumeRoom(r.roomId)}>RETOMAR</button>
-                             <button className="btn btn-sm btn-outline-danger" onClick={() => closeRoomManually(r.roomId)}>FECHAR</button>
-                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-5 opacity-25">
+                          <p className="fs-1">🧐</p>
+                          <p className="small">Nenhuma sala anterior encontrada.</p>
                         </div>
-                      ))
-                    ) : (
-                      <div className="text-center py-5 opacity-25">
-                        <p className="fs-1">🧐</p>
-                        <p className="small">Nenhuma sala anterior encontrada.</p>
-                      </div>
-                    )}
+                      )}
+                  </div>
                 </div>
+              </Col>
+            </Row>
+          </>
+        ) : (
+          <>
+            <header className="d-flex justify-content-between align-items-center w-100 flex-wrap gap-3 mb-4 border-bottom border-secondary border-opacity-25 pb-4">
+              <h1 id="mainTitle" className="mb-0 text-light fw-bold d-flex align-items-center flex-wrap gap-3" style={{ letterSpacing: '1px', fontSize: 'clamp(1.5rem, 4vw, 2rem)' }}>
+                Sala Aberta
+                <span className="ms-2 text-info" style={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)' }}>
+                  | Cód: {roomId}
+                </span>
+              </h1>
+              <div className="d-flex gap-2">
+                 <button className="btn btn-outline-info" onClick={() => {
+                   setRoomId(null);
+                 }}>PAINEL GERAL</button>
               </div>
-            </Col>
-          </Row>
-        </Container>
-      ) : (
-        <>
-          <main>
+            </header>
+            
+            <main>
             <div className="hero-stage mb-4">
               <div className="number-display pop text-center">
                 {getDisplayNumber(lastDrawn, gameMode)}
@@ -477,6 +484,7 @@ export default function AdminDashboard() {
           </aside>
         </>
       )}
+      </Container>
     </div>
   );
 }
