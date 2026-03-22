@@ -16,6 +16,7 @@ export default function SuperAdminLogin() {
     setError("");
     setLoading(true);
     try {
+      // Step 1: Login with credentials
       const res = await fetch(`${baseUrl}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -26,11 +27,27 @@ export default function SuperAdminLogin() {
         setError(data.message || "Credenciais inválidas.");
         return;
       }
-      if (data.role !== "superadmin") {
+
+      // Step 2: Verify superadmin role
+      // First check if role is in login response (new backend)
+      if (data.role && data.role !== "superadmin") {
         setError("Acesso negado. Apenas Super Admins podem entrar aqui.");
         return;
       }
-      localStorage.setItem("superAdminData", JSON.stringify(data));
+
+      // If role not in response (old backend), verify via /api/auth/all
+      if (!data.role) {
+        const verifyRes = await fetch(`${baseUrl}/api/auth/all`, {
+          headers: { Authorization: `Bearer ${data.token}` },
+        });
+        if (!verifyRes.ok) {
+          setError("Acesso negado. Apenas Super Admins podem entrar aqui.");
+          return;
+        }
+      }
+
+      // Step 3: Grant access
+      localStorage.setItem("superAdminData", JSON.stringify({ ...data, role: "superadmin" }));
       router.push("/superadmin/dashboard");
     } catch {
       setError("Erro de conexão. Tente novamente.");
