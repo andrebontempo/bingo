@@ -67,7 +67,7 @@ export default function AdminDashboard() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ adminId: admin._id, gameMode })
+        body: JSON.stringify({ adminId: admin._id, gameMode, adminEmail: admin.email })
       });
       const data = await res.json();
       setRoomId(data.roomId);

@@ -2,6 +2,20 @@ const express = require('express');
 const Room = require('../models/Room');
 const router = express.Router();
 
+router.get('/active', async (req, res) => {
+  try {
+    // Rooms created in the last 24h that are not finished
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const rooms = await Room.find({ 
+      status: { $ne: 'finished' },
+      createdAt: { $gte: yesterday }
+    }).select('roomId adminName gameMode players status');
+    res.json(rooms);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.get('/:roomId', async (req, res) => {
   try {
     const room = await Room.findOne({ roomId: req.params.roomId });
@@ -20,10 +34,12 @@ const generateRoomId = () => {
 };
 
 router.post('/create', async (req, res) => {
-  const { adminId, gameMode } = req.body;
+  const { adminId, gameMode, adminEmail } = req.body;
   try {
     const roomId = generateRoomId();
-    const room = await Room.create({ roomId, admin: adminId, gameMode, drawnNumbers: [] });
+    // Use email before @ as name
+    const adminName = adminEmail ? adminEmail.split('@')[0] : 'Organizador';
+    const room = await Room.create({ roomId, admin: adminId, adminName, gameMode, drawnNumbers: [] });
     res.status(201).json(room);
   } catch (error) {
     res.status(500).json({ message: error.message });
