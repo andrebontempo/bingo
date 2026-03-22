@@ -268,8 +268,8 @@ export default function AdminDashboard() {
           ) : (
             <>
               PAINEL DE CONTROLE
-              <span className="ms-1 text-danger small opacity-75" style={{ fontSize: '0.6em', textTransform: 'lowercase' }}>
-                do Organizador: {admin?.email?.split('@')[0]}
+              <span className="ms-1 text-white border-start ps-3 small opacity-75" style={{ fontSize: '0.6em', textTransform: 'capitalize', fontWeight: '300' }}>
+                Organizador: {admin?.email?.split('@')[0].replace('.', ' ')}
               </span>
             </>
           )}
@@ -282,46 +282,55 @@ export default function AdminDashboard() {
       </header>
 
       {!roomId ? (
-        <main className="w-100 d-flex flex-wrap gap-4 align-items-start justify-content-center" style={{ minHeight: 'calc(100vh - 200px)' }}>
-          <div className="board-glass p-4 p-md-5 text-center d-flex flex-column align-items-center justify-content-center flex-grow-1" style={{ borderRadius: '24px', maxWidth: '600px', border: '1px solid rgba(255,255,255,0.1)' }}>
-            <div className="mb-4 text-info opacity-75">
-              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm2 7a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-1.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
-                <path d="M14 2H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zM2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2z" />
-              </svg>
-            </div>
-            <h2 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)' }}>ESTAÇÃO BINGO</h2>
-            <p className="text-light opacity-75 mb-5 fs-5">
-              Selecione a quantidade de dezenas na aba superior e ligue os motores virtuais para iniciar a sala!
-            </p>
-            <button className="btn-cyber btn-primary-cyber px-5 py-4 w-100 fw-bold rounded-4" style={{ fontSize: '1.4rem', letterSpacing: '2px', boxShadow: '0 0 20px rgba(14, 165, 233, 0.4)' }} onClick={createRoom}>
-              INICIAR SALA ({gameMode} Bolas)
-            </button>
-            <p className="mt-4 mb-0 text-light opacity-50 small">
-              O sistema gerará simultaneamente o Código Criptográfico e o QR Code temporário para acesso instantâneo.
-            </p>
-          </div>
+        <Container fluid="lg" className="mt-4">
+          <Row className="justify-content-center g-5">
+            <Col lg={6}>
+              <div className="board-glass p-4 p-md-5 text-center d-flex flex-column align-items-center justify-content-center h-100" style={{ borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <div className="mb-4 text-info opacity-75">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm2 7a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-1.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                    <path d="M14 2H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zM2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2z" />
+                  </svg>
+                </div>
+                <h2 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)' }}>ESTAÇÃO BINGO</h2>
+                <p className="text-light opacity-75 mb-5 fs-5">
+                  Selecione a quantidade de dezenas na aba superior e ligue os motores virtuais para iniciar a sala!
+                </p>
+                <button className="btn-cyber btn-primary-cyber px-5 py-4 w-100 fw-bold rounded-4" style={{ fontSize: '1.4rem', letterSpacing: '2px', boxShadow: '0 0 20px rgba(14, 165, 233, 0.4)' }} onClick={createRoom}>
+                  INICIAR SALA ({gameMode} Bolas)
+                </button>
+                <p className="mt-4 mb-0 text-light opacity-50 small">
+                  O sistema gerará simultaneamente o Código Criptográfico e o QR Code temporário para acesso instantâneo.
+                </p>
+              </div>
+            </Col>
 
-          <div className="cyber-panel flex-grow-1" style={{ maxWidth: '450px', width: '100%', minHeight: '400px' }}>
-             <h3 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1rem' }}>SUAS SALAS / STATUS</h3>
-             <div className="d-flex flex-column gap-3" style={{ maxHeight: '420px', overflowY: 'auto' }}>
-                {adminRooms.length > 0 ? (
-                  adminRooms.map(r => (
-                    <div key={r.roomId} className="p-3 border rounded-3 d-flex justify-content-between align-items-center bg-dark" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                       <div>
-                          <div className="text-info fw-bold small">SALA: {r.roomId}</div>
-                          <div className="text-white small opacity-75">{r.gameMode} Bolas • {r.players?.length || 0} Jogadores</div>
-                          <div className="badge bg-secondary mt-1" style={{ fontSize: '0.6rem' }}>{r.status === 'playing' ? 'EM JOGO' : 'ESPERANDO'}</div>
-                       </div>
-                       <button className="btn btn-sm btn-outline-danger" onClick={() => closeRoomManually(r.roomId)}>FECHAR</button>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-light opacity-25 small text-center pt-5">Nenhuma sala anterior encontrada.</p>
-                )}
-             </div>
-          </div>
-        </main>
+            <Col lg={5}>
+              <div className="cyber-panel p-4 h-100" style={{ border: '1px solid var(--border)', borderRadius: '24px' }}>
+                <h3 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1rem' }}>SUAS SALAS / STATUS</h3>
+                <div className="d-flex flex-column gap-3" style={{ maxHeight: '420px', overflowY: 'auto' }}>
+                    {adminRooms.length > 0 ? (
+                      adminRooms.map(r => (
+                        <div key={r.roomId} className="p-3 border rounded-3 d-flex justify-content-between align-items-center bg-dark" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                          <div>
+                              <div className="text-info fw-bold small">SALA: {r.roomId}</div>
+                              <div className="text-white small opacity-75">{r.gameMode} Bolas • {r.players?.length || 0} Jogadores</div>
+                              <div className="badge bg-secondary mt-1" style={{ fontSize: '0.6rem' }}>{r.status === 'playing' ? 'EM JOGO' : 'ESPERANDO'}</div>
+                          </div>
+                          <button className="btn btn-sm btn-outline-danger" onClick={() => closeRoomManually(r.roomId)}>FECHAR</button>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-5 opacity-25">
+                        <p className="fs-1">🧐</p>
+                        <p className="small">Nenhuma sala anterior encontrada.</p>
+                      </div>
+                    )}
+                </div>
+              </div>
+            </Col>
+          </Row>
+        </Container>
       ) : (
         <>
           <main>
