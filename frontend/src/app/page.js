@@ -84,8 +84,8 @@ export default function LandingPage() {
       </header>
 
       <Container className="flex-grow-1 mb-5">
-        <Row className="g-5">
-          {/* LADO ORGANIZADOR: LOGIN INTEGRADO (ESQUERDA) */}
+        <Row className="g-5 justify-content-center">
+          {/* LADO ORGANIZADOR: LOGIN INTEGRADO (ESQUERDA / POSIÇÃO 2 NO CELULAR) */}
           <Col lg={5} className="order-2 order-lg-1">
             <div className="cyber-panel p-4 p-md-5 h-100 position-relative overflow-hidden" 
               style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '32px' }}>
@@ -133,56 +133,28 @@ export default function LandingPage() {
             </div>
           </Col>
 
-          {/* LADO JOGADOR: DESCOBERTA DE SALAS (DIREITA) */}
-          <Col lg={7} className="order-1 order-lg-2">
-            <div className="cyber-panel p-4 p-md-5 h-100" style={{ minHeight: '500px' }}>
-              <div className="d-flex justify-content-between align-items-center mb-4">
-                <h3 className="fw-bold m-0" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1.2rem' }}>
-                  ENTRAR COMO JOGADOR <span className="text-info">SALAS ABERTAS:</span> 🕹️
-                </h3>
-                {loadingRooms && <Spinner animation="border" size="sm" variant="info" />}
-              </div>
+          {/* LADO JOGADOR: BOTÃO SIMPLES (DIREITA / POSIÇÃO 3 NO CELULAR) */}
+          <Col lg={5} className="order-3 order-lg-2">
+            <div className="cyber-panel p-4 p-md-5 h-100 d-flex flex-column align-items-center justify-content-center text-center" 
+              style={{ minHeight: '400px', background: 'var(--surface-opaque)', border: '1px solid var(--border)', borderStyle: 'dashed' }}>
+              
+              <div className="mb-4 fs-1 opacity-50">🎮</div>
+              <h3 className="fw-bold mb-3" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1.2rem' }}>
+                SOU <span className="text-info">JOGADOR</span>
+              </h3>
+              <p className="text-light opacity-50 mb-4" style={{ maxWidth: '300px' }}>
+                Deseja participar de um Bingo? Explore as salas abertas e pegue sua cartela agora mesmo.
+              </p>
 
-              <div className="d-flex flex-column gap-3 overflow-auto pr-2" style={{ maxHeight: '550px' }}>
-                {activeRooms.length > 0 ? (
-                  activeRooms.map((room) => (
-                    <div 
-                      key={room.roomId} 
-                      onClick={() => handleJoin(room.roomId)}
-                      className="p-4 border d-flex justify-content-between align-items-center transition-all hover-scale"
-                      style={{ 
-                        cursor: 'pointer', 
-                        background: 'rgba(255,255,255,0.03)', 
-                        borderColor: 'rgba(255,255,255,0.08)',
-                        borderRadius: '20px'
-                      }}
-                    >
-                      <div>
-                        <h5 className="text-white m-0 fw-bold">BINGO DO {room.adminName.toUpperCase()}</h5>
-                        <div className="d-flex gap-2 mt-1">
-                          <span className="text-info small opacity-75">{room.gameMode} BOLAS</span>
-                          <span className="text-light opacity-25 small">•</span>
-                          <span className="text-light opacity-50 small">{room.players?.length || 0} JOGADORES</span>
-                        </div>
-                      </div>
-                      <div className="text-end">
-                        <Badge bg="dark" className="border border-info text-info mb-2 px-3 py-2 rounded-3" style={{ fontSize: '0.8rem' }}>#{room.roomId}</Badge>
-                        <div className="text-accent small fw-bold" style={{ fontSize: '0.7rem' }}>CLIQUE PARA ENTRAR →</div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-5">
-                     {!loadingRooms && (
-                       <div className="opacity-25 py-5">
-                          <p className="fs-1 mb-0">🎱</p>
-                          <p className="fw-bold mt-2">SISTEMA AGUARDANDO NOVAS SALAS...</p>
-                          <p className="small mx-auto" style={{ maxWidth: '300px' }}>Assim que um organizador iniciar um Bingo, a sala aparecerá aqui instantaneamente.</p>
-                       </div>
-                     )}
-                  </div>
-                )}
-              </div>
+              <button 
+                onClick={() => router.push('/salas')}
+                className="btn-cyber bg-transparent border-info text-info w-100 py-4 fs-5 fw-bold transition-all hover-glow"
+                style={{ borderRadius: '24px', letterSpacing: '2px' }}
+              >
+                VER SALAS ABERTAS →
+              </button>
+              
+              <p className="mt-4 small text-light opacity-25 fw-bold">ACESSO 100% DIGITAL</p>
             </div>
           </Col>
         </Row>
