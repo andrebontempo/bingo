@@ -125,8 +125,12 @@
         order: 5 !important;
       }
 
-      .qr-panel {
+      .players-panel {
         order: 6 !important;
+      }
+
+      .qr-panel {
+        order: 7 !important;
       }
     }
 

@@ -317,7 +317,7 @@ export default function AdminDashboard() {
               <p className="small text-light mb-0">Jogadores entram apenas escaneando.</p>
             </section>
 
-            <section className="cyber-panel mt-4 overflow-hidden">
+            <section className="cyber-panel players-panel mt-4 overflow-hidden">
                <div className="d-flex justify-content-between align-items-center mb-3">
                  <h2 className="text-light fw-bold m-0">Jogadores</h2>
                  <span className="badge bg-info" style={{ fontSize: '0.8rem' }}>{players.length}</span>
