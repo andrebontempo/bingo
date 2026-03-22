@@ -101,9 +101,10 @@ export default function PlayerHome() {
           SALA - {roomId}
         </h2>
         
-        <div className="hero-stage w-100 mb-4 d-flex align-items-center justify-content-center" style={{ minHeight: '150px', padding: '10px' }}>
-          <div className="number-display pop text-center" style={{ fontSize: 'clamp(2.5rem, 15vw, 5rem)', width: '100%' }}>
-             {lastDrawn ? lastDrawn : <span style={{ fontSize: '0.4em', whiteSpace: 'nowrap', letterSpacing: '2px' }}>INÍCIO DO JOGO</span>}
+        <div className="d-flex align-items-center justify-content-between bg-dark border shadow-sm rounded-4 w-100 px-4 py-2 mb-4" style={{ maxWidth: '420px', borderColor: 'rgba(255,255,255,0.1)' }}>
+          <span className="text-light opacity-75 small fw-bold text-uppercase" style={{ letterSpacing: '1px' }}>ÚLTIMA BOLA:</span>
+          <div className="number-display pop m-0" style={{ fontSize: '2.4rem', color: 'var(--accent)', textShadow: '0 0 10px rgba(14,165,233,0.3)', minHeight: '40px' }}>
+             {lastDrawn ? lastDrawn : <span style={{ fontSize: '1rem', whiteSpace: 'nowrap', letterSpacing: '2px', color: 'var(--text-muted)' }}>AGUARDE</span>}
           </div>
         </div>
 

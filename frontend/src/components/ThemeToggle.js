@@ -35,10 +35,16 @@ export default function ThemeToggle() {
         background: 'var(--surface-opaque)',
         color: 'var(--text)',
         border: '1px solid var(--border)',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+        boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+        width: '45px',
+        height: '45px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '0'
       }}
     >
-      {theme === 'dark' ? '☀️ CLARO' : '🌙 ESCURO'}
+      {theme === 'dark' ? '☀️' : '🌙'}
     </button>
   );
 }
