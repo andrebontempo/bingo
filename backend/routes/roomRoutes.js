@@ -112,4 +112,14 @@ router.put('/:roomId/draw', async (req, res) => {
    }
 });
 
+router.delete('/:roomId', async (req, res) => {
+  try {
+    const room = await Room.findOneAndDelete({ roomId: req.params.roomId });
+    if (!room) return res.status(404).json({ message: 'Sala não encontrada.' });
+    res.json({ message: 'Sala encerrada com sucesso.' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

@@ -139,6 +139,8 @@ export default function AdminDashboard() {
   const resetGame = () => {
     if (!window.confirm("Deseja realmente iniciar um Novo Bingo? Isso encerrará a sala atual e removerá todos os jogadores conectados.")) return;
 
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/${roomId}`, { method: 'DELETE' });
+
     setAutoMode(0);
     setCalledNumbers([]);
     setLastDrawn(null);
@@ -181,7 +183,12 @@ export default function AdminDashboard() {
   };
 
   const getDisplayNumber = (num, mMode) => {
-    if (!num) return <span style={{ fontSize: '0.4em', whiteSpace: 'nowrap', letterSpacing: '2px' }}>INÍCIO DO JOGO</span>;
+    if (!num) return (
+      <div className="d-flex flex-column align-items-center justify-content-center">
+        <span style={{ fontSize: '0.4em', whiteSpace: 'nowrap', letterSpacing: '2px', opacity: 0.8 }}>BINGO INICIADO</span>
+        <span style={{ fontSize: '0.23em', whiteSpace: 'nowrap', letterSpacing: '1px', color: 'var(--accent)', marginTop: '-15px' }}>AGUARDANDO JOGADORES</span>
+      </div>
+    );
     if (mMode === 75 || mMode === 90) {
       const cols = ["B", "I", "N", "G", "O"];
       const letter = cols[Math.floor((num - 1) / (mMode === 75 ? 15 : 18))];
