@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/context/SocketContext";
+import { Container, Row, Col, Badge, Spinner } from "react-bootstrap";
 import { QRCodeSVG } from "qrcode.react";
 
 export default function AdminDashboard() {
