@@ -390,6 +390,29 @@ export default function AdminDashboard() {
                       {getDisplayNumber(lastDrawn, gameMode)}
                     </div>
                   </div>
+
+                  {/* CONTROLES MOBILE: APARECEM AQUI SÓ NO CELULAR (ABAIXO DO NÚMERO) */}
+                  <div className="d-block d-lg-none mb-4">
+                    <section className="cyber-panel controls-panel">
+                      <div className="control-stack d-flex flex-column gap-2">
+                        {autoMode > 0 ? (
+                          <button className="btn-cyber border-danger text-danger bg-transparent rounded-3 w-100 py-3 mb-2 fw-bold" onClick={() => setAutoMode(0)}>
+                            ⏹ Parar Sorteio Auto
+                          </button>
+                        ) : (
+                          <button className="btn-cyber btn-primary-cyber rounded-3 w-100 py-3 mb-2 fw-bold" onClick={drawNumber} style={{ fontSize: '1.2rem' }}>
+                            SORTEAR BOLA
+                          </button>
+                        )}
+                        <div className="d-flex gap-2">
+                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 5000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(5000)}>⚡ Auto 5s</button>
+                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 8000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(8000)}>🐢 Auto 8s</button>
+                          <button className="btn btn-outline-secondary btn-sm text-white border-secondary rounded-3" onClick={resetGame}>♻️ Novo</button>
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+
                   <div className="board-glass p-3">
                     <table className="w-100">
                       <thead>
@@ -409,7 +432,8 @@ export default function AdminDashboard() {
               {/* LADO DIREITO: CONTROLES E INFORMAÇÕES */}
               <Col lg={4}>
                 <aside className="d-flex flex-column gap-4">
-                  <section className="cyber-panel controls-panel">
+                  {/* CONTROLES DESKTOP: DESAPARECEM NO CELULAR PARA NÃO REPETIR */}
+                  <section className="cyber-panel controls-panel d-none d-lg-block">
                     <h2 className="mb-3 text-light fw-bold fs-6 opacity-75" style={{ fontFamily: 'var(--font-syncopate)' }}>COMANDOS</h2>
                     <div className="control-stack d-flex flex-column gap-2">
                       <button className="btn btn-outline-secondary text-white border-secondary rounded-3 py-2 mb-1 small" onClick={resetGame}>♻️ Novo Bingo</button>
