@@ -317,13 +317,6 @@ export default function AdminDashboard() {
                   ))}
                 </div>
                 <button
-                  className="btn btn-outline-info btn-sm fw-bold px-3"
-                  style={{ whiteSpace: 'nowrap' }}
-                  onClick={() => router.push('/admin/salas')}
-                >
-                  🗂 SALAS
-                </button>
-                <button
                   className="btn btn-outline-danger btn-sm fw-bold px-3"
                   style={{ whiteSpace: 'nowrap' }}
                   onClick={() => {
