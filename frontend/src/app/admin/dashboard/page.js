@@ -20,6 +20,7 @@ export default function AdminDashboard() {
   const [voices, setVoices] = useState([]);
   const [selectedVoiceType, setSelectedVoiceType] = useState('male');
   const [frontendUrl, setFrontendUrl] = useState('');
+  const [adminRooms, setAdminRooms] = useState([]); // Histórico de salas do admin
 
   useEffect(() => {
     setFrontendUrl(window.location.origin);
@@ -38,6 +39,18 @@ export default function AdminDashboard() {
       window.speechSynthesis.onvoiceschanged = loadVoices;
     }
   }, [router]);
+
+  useEffect(() => {
+    if (admin?._id && !roomId) {
+      const fetchAdminRooms = async () => {
+         try {
+           const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/admin/${admin._id}`);
+           if (res.ok) setAdminRooms(await res.json());
+         } catch(e) { console.error(e); }
+      };
+      fetchAdminRooms();
+    }
+  }, [admin, roomId]);
 
   useEffect(() => {
     if (socket && roomId) {
@@ -136,10 +149,10 @@ export default function AdminDashboard() {
     return () => clearTimeout(timer);
   }, [autoMode, calledNumbers, gameMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const resetGame = () => {
+  const resetGame = async () => {
     if (!window.confirm("Deseja realmente iniciar um Novo Bingo? Isso encerrará a sala atual e removerá todos os jogadores conectados.")) return;
 
-    fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/${roomId}`, { method: 'DELETE' });
+    await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/${roomId}`, { method: 'DELETE' });
 
     setAutoMode(0);
     setCalledNumbers([]);
@@ -148,6 +161,14 @@ export default function AdminDashboard() {
     setPlayers([]);
     if (socket) socket.emit('close_room', roomId);
     setRoomId(null);
+  };
+
+  const closeRoomManually = async (rid) => {
+    if (!window.confirm(`Deseja fechar permanentemente a sala ${rid}?`)) return;
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/${rid}`, { method: 'DELETE' });
+      setAdminRooms(prev => prev.filter(r => r.roomId !== rid));
+    } catch(e) { console.error(e); }
   };
 
   const drawNumber = async () => {
@@ -245,7 +266,12 @@ export default function AdminDashboard() {
               </span>
             </>
           ) : (
-            "PAINEL DE CONTROLE"
+            <>
+              PAINEL DE CONTROLE
+              <span className="ms-1 text-danger small opacity-75" style={{ fontSize: '0.6em', textTransform: 'lowercase' }}>
+                do Organizador: {admin?.email?.split('@')[0]}
+              </span>
+            </>
           )}
         </h1>
         <div className="tabs pt-2 pt-md-0">
@@ -256,8 +282,8 @@ export default function AdminDashboard() {
       </header>
 
       {!roomId ? (
-        <main className="w-100 d-flex flex-column align-items-center justify-content-center" style={{ minHeight: 'calc(100vh - 200px)' }}>
-          <div className="board-glass p-4 p-md-5 text-center d-flex flex-column align-items-center justify-content-center" style={{ borderRadius: '24px', maxWidth: '600px', width: '100%', border: '1px solid rgba(255,255,255,0.1)' }}>
+        <main className="w-100 d-flex flex-wrap gap-4 align-items-start justify-content-center" style={{ minHeight: 'calc(100vh - 200px)' }}>
+          <div className="board-glass p-4 p-md-5 text-center d-flex flex-column align-items-center justify-content-center flex-grow-1" style={{ borderRadius: '24px', maxWidth: '600px', border: '1px solid rgba(255,255,255,0.1)' }}>
             <div className="mb-4 text-info opacity-75">
               <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
                 <path d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm2 7a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-1.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
@@ -274,6 +300,26 @@ export default function AdminDashboard() {
             <p className="mt-4 mb-0 text-light opacity-50 small">
               O sistema gerará simultaneamente o Código Criptográfico e o QR Code temporário para acesso instantâneo.
             </p>
+          </div>
+
+          <div className="cyber-panel flex-grow-1" style={{ maxWidth: '450px', width: '100%', minHeight: '400px' }}>
+             <h3 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1rem' }}>SUAS SALAS / STATUS</h3>
+             <div className="d-flex flex-column gap-3" style={{ maxHeight: '420px', overflowY: 'auto' }}>
+                {adminRooms.length > 0 ? (
+                  adminRooms.map(r => (
+                    <div key={r.roomId} className="p-3 border rounded-3 d-flex justify-content-between align-items-center bg-dark" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
+                       <div>
+                          <div className="text-info fw-bold small">SALA: {r.roomId}</div>
+                          <div className="text-white small opacity-75">{r.gameMode} Bolas • {r.players?.length || 0} Jogadores</div>
+                          <div className="badge bg-secondary mt-1" style={{ fontSize: '0.6rem' }}>{r.status === 'playing' ? 'EM JOGO' : 'ESPERANDO'}</div>
+                       </div>
+                       <button className="btn btn-sm btn-outline-danger" onClick={() => closeRoomManually(r.roomId)}>FECHAR</button>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-light opacity-25 small text-center pt-5">Nenhuma sala anterior encontrada.</p>
+                )}
+             </div>
           </div>
         </main>
       ) : (

@@ -2,6 +2,15 @@ const express = require('express');
 const Room = require('../models/Room');
 const router = express.Router();
 
+router.get('/admin/:adminId', async (req, res) => {
+  try {
+    const rooms = await Room.find({ admin: req.params.adminId }).sort({ createdAt: -1 });
+    res.json(rooms);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.get('/active', async (req, res) => {
   try {
     // Rooms created in the last 24h that are not finished
