@@ -391,37 +391,33 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  {/* CONTROLES MOBILE: IGUAIS AO DESKTOP, MAS COMPACTOS PARA O TOPO DO CELULAR */}
+                  {/* CONTROLES MOBILE: MESMA ORDEM E ESTRUTURA DO DESKTOP */}
                   <div className="d-block d-lg-none mb-4">
                     <section className="cyber-panel controls-panel p-3">
-                      <div className="control-stack d-flex flex-column gap-3">
-                        {autoMode > 0 ? (
-                          <button className="btn-cyber border-danger text-danger bg-transparent rounded-3 w-100 py-4 fw-bold shadow-lg" onClick={() => setAutoMode(0)}>
-                            ⏹ PARAR SORTEIO AUTO
-                          </button>
-                        ) : (
-                          <button className="btn-cyber btn-primary-cyber rounded-3 w-100 py-4 fw-bold shadow-lg" onClick={drawNumber} style={{ fontSize: '1.4rem', letterSpacing: '2px' }}>
-                            SORTEAR BOLA
-                          </button>
-                        )}
-                        
+                      <div className="control-stack d-flex flex-column gap-2">
+
+                        {/* 1. NOVO BINGO */}
+                        <button className="btn-cyber bg-transparent text-white border-secondary rounded-3 py-2 w-100" onClick={resetGame}>♻️ Novo Bingo</button>
+
+                        {/* 2. AUTO 5S | AUTO 8S */}
                         <div className="d-flex gap-2">
-                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 5000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(5000)}>
-                            ⚡ 5s
-                          </button>
-                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 8000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(8000)}>
-                            🐢 8s
-                          </button>
-                          <button className="btn-cyber flex-grow-1 border-secondary text-white bg-transparent rounded-3 py-2 small" onClick={resetGame}>
-                            ♻️ NOVO
-                          </button>
+                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 5000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(5000)}>⚡ Auto 5s</button>
+                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 8000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(8000)}>🐢 Auto 8s</button>
                         </div>
 
-                        {/* VOZ NO CELULAR TAMBÉM */}
+                        {/* 3. SORTEAR BOLA */}
+                        {autoMode > 0 ? (
+                          <button className="btn-cyber border-danger text-danger bg-transparent rounded-3 w-100 py-3 mt-1 mb-1 fw-bold" onClick={() => setAutoMode(0)}>⏹ Parar Sorteio Auto</button>
+                        ) : (
+                          <button className="btn-cyber btn-primary-cyber rounded-3 w-100 py-3 mt-1 mb-1 fw-bold" onClick={drawNumber} style={{ fontSize: '1.2rem' }}>SORTEAR BOLA</button>
+                        )}
+
+                        {/* 4. VOZ 1 | VOZ 2 */}
                         <div className="d-flex gap-2 voice-switch w-100 border border-secondary shadow-sm rounded-3 overflow-hidden">
-                          <button className={`flex-grow-1 py-1 small ${selectedVoiceType === 'male' ? 'active' : ''}`} style={{ background: selectedVoiceType === 'male' ? 'var(--primary)' : 'transparent', border: 'none', color: 'white' }} onClick={() => setSelectedVoiceType('male')}>VOZ 1</button>
-                          <button className={`flex-grow-1 py-1 small ${selectedVoiceType === 'female' ? 'active' : ''}`} style={{ background: selectedVoiceType === 'female' ? 'var(--primary)' : 'transparent', border: 'none', color: 'white' }} onClick={() => setSelectedVoiceType('female')}>VOZ 2</button>
+                          <button className={`flex-grow-1 py-2 ${selectedVoiceType === 'male' ? 'active' : ''}`} style={{ background: selectedVoiceType === 'male' ? 'var(--primary)' : 'transparent', border: 'none', color: 'white' }} onClick={() => setSelectedVoiceType('male')}>Voz 1</button>
+                          <button className={`flex-grow-1 py-2 ${selectedVoiceType === 'female' ? 'active' : ''}`} style={{ background: selectedVoiceType === 'female' ? 'var(--primary)' : 'transparent', border: 'none', color: 'white' }} onClick={() => setSelectedVoiceType('female')}>Voz 2</button>
                         </div>
+
                       </div>
                     </section>
                   </div>
