@@ -1,0 +1,216 @@
+"use client";
+import { useState, useEffect } from "react";
+import { useSocket } from "@/context/SocketContext";
+import { Container, Card, Form, Alert } from "react-bootstrap";
+
+export default function PlayerHome() {
+  const socket = useSocket();
+  const [roomId, setRoomId] = useState("");
+  const [name, setName] = useState("");
+  const [joined, setJoined] = useState(false);
+  const [lastDrawn, setLastDrawn] = useState(null);
+  const [cartela, setCartela] = useState([]);
+  const [marked, setMarked] = useState([]);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomFromUrl = urlParams.get('room');
+    if (roomFromUrl) setRoomId(roomFromUrl);
+
+    if (socket) {
+      socket.on('number_drawn', (data) => {
+        setLastDrawn(data.display || data.number);
+      });
+      socket.on('game_started', () => {
+        setLastDrawn(null);
+        setMarked([]);
+      });
+      socket.on('room_closed', () => {
+        alert("A sala atual foi encerrada pelo Administrador.");
+        window.location.href = '/'; 
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off('number_drawn');
+        socket.off('game_started');
+        socket.off('room_closed');
+      }
+    };
+  }, [socket]);
+
+  const generateCard = (maxMode) => {
+    const colSize = Math.max(5, Math.ceil(maxMode / 5));
+    const newCartela = [];
+    for (let c = 0; c < 5; c++) {
+      let colNums = [];
+      while (colNums.length < 5) {
+        let maxLimit = Math.min((c + 1) * colSize, maxMode);
+        let minLimit = c * colSize + 1;
+        let range = maxLimit - minLimit + 1;
+        if (range < 5) {
+            minLimit = Math.max(1, maxMode - 4);
+            maxLimit = maxMode;
+        }
+        const rn = Math.floor(Math.random() * (maxLimit - minLimit + 1)) + minLimit;
+        if (!colNums.includes(rn)) colNums.push(rn);
+      }
+      colNums.sort((a,b) => a - b);
+      if (c === 2) colNums[2] = "FREE";
+      newCartela.push(colNums);
+    }
+    const rows = [];
+    for (let r = 0; r < 5; r++) {
+      let rowObj = [];
+      for (let c = 0; c < 5; c++) {
+        rowObj.push(newCartela[c][r]);
+      }
+      rows.push(rowObj);
+    }
+    setCartela(rows);
+  };
+
+  const joinGame = async (e) => {
+    e.preventDefault();
+    if (!roomId || !name) return;
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/${roomId}`);
+      let mode = 75;
+      if (res.ok) {
+        const room = await res.json();
+        mode = room.gameMode || 75;
+      }
+      if (socket) {
+        socket.emit('join_room', roomId);
+        generateCard(mode);
+        setJoined(true);
+      }
+    } catch(err) {
+      console.log(err);
+    }
+  };
+
+  const toggleMark = (num) => {
+    setMarked(prev => prev.includes(num) ? prev.filter(n=>n!==num) : [...prev, num]);
+  };
+
+  if (joined) {
+    return (
+      <Container className="d-flex flex-column align-items-center justify-content-center min-vh-100 py-3">
+        <h2 className="mb-4 text-center" style={{ fontFamily: 'var(--font-syncopate)', color: 'var(--primary)', letterSpacing: '2px' }}>
+          SALA - {roomId}
+        </h2>
+        
+        <div className="hero-stage w-100 mb-4 d-flex align-items-center justify-content-center" style={{ minHeight: '150px', padding: '10px' }}>
+          <div className="number-display pop text-center" style={{ fontSize: 'clamp(2.5rem, 15vw, 5rem)', width: '100%' }}>
+             {lastDrawn ? lastDrawn : <span style={{ fontSize: '0.4em', whiteSpace: 'nowrap', letterSpacing: '2px' }}>INÍCIO DO JOGO</span>}
+          </div>
+        </div>
+
+        <Card className="cyber-panel w-100 border-0" style={{ maxWidth: '420px' }}>
+          <Card.Body className="p-sm-4 p-2">
+            <h4 className="text-center mb-3 text-light">Cartela de <span style={{ color: 'var(--accent)' }}>{name}</span></h4>
+            
+            <div className="board-glass p-2 mb-4 mx-auto w-100" style={{ borderRadius: '12px', overflowX: 'hidden' }}>
+              <table className="w-100 text-center m-0 p-0" style={{ tableLayout: 'fixed', borderSpacing: '4px', borderCollapse: 'separate' }}>
+                <thead>
+                  <tr>
+                    {["B", "I", "N", "G", "O"].map(letter => (
+                      <th key={letter} className="fs-5 pb-2 text-primary" style={{ fontFamily: 'var(--font-syncopate)' }}>
+                        {letter}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {cartela.map((row, rIdx) => (
+                     <tr key={rIdx}>
+                       {row.map((cell, cIdx) => {
+                         const isFree = cell === "FREE";
+                         const isMarked = isFree || marked.includes(cell);
+                         return (
+                           <td key={cIdx} className="p-0">
+                             <div 
+                               onClick={() => !isFree && toggleMark(cell)}
+                               className="d-flex align-items-center justify-content-center mx-auto"
+                               style={{ 
+                                 width: '100%', 
+                                 aspectRatio: '1/1',
+                                 fontSize: isFree ? '1rem' : 'clamp(0.9rem, 4vw, 1.3rem)', 
+                                 fontWeight: 'bold', 
+                                 borderRadius: '8px', 
+                                 cursor: isFree ? 'default' : 'pointer',
+                                 background: isMarked ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'var(--glass-bg)',
+                                 color: isMarked ? '#fff' : 'var(--text-muted)',
+                                 border: isMarked ? '2px solid var(--accent)' : '1px solid var(--border)',
+                                 boxShadow: isMarked ? '0 0 10px rgba(14, 165, 233, 0.3)' : 'none',
+                                 transition: 'all 0.2s',
+                                 transform: isMarked ? 'scale(1.05)' : 'scale(1)'
+                               }}>
+                               {isFree ? "⭐" : cell}
+                             </div>
+                           </td>
+                         )
+                       })}
+                     </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="d-flex flex-sm-row flex-column gap-3 w-100">
+              <button 
+                className="btn-cyber bg-transparent border-warning text-warning flex-grow-1 py-3 fw-bold shadow-sm" 
+                style={{ fontSize: '1.2rem', borderRadius: '12px' }} 
+                onClick={() => socket && socket.emit('linha_called', { roomId, playerName: name, cardNumbers: cartela })}>
+                LINHA!
+              </button>
+              <button 
+                className="btn-cyber btn-primary-cyber flex-grow-1 py-3 m-0 shadow-sm" 
+                style={{ fontSize: '1.5rem', borderRadius: '12px' }} 
+                onClick={() => socket && socket.emit('bingo_called', { roomId, playerName: name, cardNumbers: cartela })}>
+                BINGO!
+              </button>
+            </div>
+          </Card.Body>
+        </Card>
+      </Container>
+    );
+  }
+
+  return (
+    <Container className="d-flex flex-column align-items-center justify-content-center min-vh-100 position-relative">
+      <div className="logo text-center mb-5 w-100">
+        <h1 id="mainTitle" style={{ fontSize: 'clamp(2rem, 5vw, 3rem)' }}>BINGO V2</h1>
+        <p className="text-muted mt-2" style={{ fontFamily: 'var(--font-syncopate)', letterSpacing: '2px', fontSize: '0.8rem' }}>
+          FUTURISTIC EDITION
+        </p>
+      </div>
+
+      <Card className="cyber-panel w-100 border-0" style={{ maxWidth: '400px' }}>
+        <Card.Body className="p-4">
+          <Alert variant="info" className="bg-transparent border-info text-info rounded-3 mb-4 text-center" style={{ fontSize: '0.9rem' }}>
+            Participe digitando o código da sala.
+          </Alert>
+          <Form onSubmit={joinGame}>
+            <Form.Group className="mb-4">
+              <Form.Label className="text-light fw-bold small">Código da Sala</Form.Label>
+              <Form.Control type="text" placeholder="CÓDIGO" value={roomId} onChange={e => setRoomId(e.target.value.toUpperCase())} required 
+                style={{ background: 'var(--glass-bg)', color: 'var(--accent)', border: '1px solid var(--border)', fontSize: '1.2rem', padding: '12px', letterSpacing: '2px', fontWeight: 'bold', textAlign: 'center' }} />
+            </Form.Group>
+            <Form.Group className="mb-5">
+              <Form.Label className="text-light fw-bold small">Apelido</Form.Label>
+              <Form.Control type="text" placeholder="Seu Nome" value={name} onChange={e => setName(e.target.value)} required 
+                style={{ background: 'var(--glass-bg)', color: 'white', border: '1px solid var(--border)', fontSize: '1.1rem', padding: '12px', textAlign: 'center' }} />
+            </Form.Group>
+            <button type="submit" className="btn-cyber btn-primary-cyber w-100 py-3">
+              ENTRAR
+            </button>
+          </Form>
+        </Card.Body>
+      </Card>
+
+      {/* Link de administrador oculto para focar na tela do jogador */}
+    </Container>
+  );
+}
