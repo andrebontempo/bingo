@@ -345,10 +345,10 @@ export default function AdminDashboard() {
                 <div className="d-flex flex-column gap-2" style={{ maxHeight: '250px', overflowY: 'auto', paddingRight: '10px' }}>
                   {history.map((item, idx) => (
                     <div key={idx} className="d-flex justify-content-between align-items-center rounded-3 bg-dark border shadow-sm px-3 py-2" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                      <span className="text-info opacity-75 small" style={{ fontFamily: 'monospace' }}>{item.time}</span>
                       <strong className="text-white" style={{ fontSize: '1.2rem', letterSpacing: '1px' }}>
                         {getDisplayNumber(item.number, gameMode)}
                       </strong>
+                      <span className="text-info opacity-75 small" style={{ fontFamily: 'monospace' }}>{item.time}</span>
                     </div>
                   ))}
                 </div>
