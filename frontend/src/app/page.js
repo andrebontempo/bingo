@@ -85,12 +85,60 @@ export default function LandingPage() {
 
       <Container className="flex-grow-1 mb-5">
         <Row className="g-5">
-          {/* LADO JOGADOR: DESCOBERTA DE SALAS */}
-          <Col lg={7}>
+          {/* LADO ORGANIZADOR: LOGIN INTEGRADO (ESQUERDA) */}
+          <Col lg={5} className="order-2 order-lg-1">
+            <div className="cyber-panel p-4 p-md-5 h-100 position-relative overflow-hidden" 
+              style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '32px' }}>
+              
+              {/* IMAGE ELEMENT */}
+              <div className="mb-4 rounded-4 overflow-hidden border border-secondary border-opacity-25" style={{ height: '140px' }}>
+                 <img src="/bingo_futuristic_bg.png" alt="Bingo Art" className="w-100 h-100 object-fit-cover opacity-75" />
+              </div>
+
+              <h3 className="text-light fw-bold mb-3" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1rem' }}>
+                ÁREA DO ORGANIZADOR 🛠️
+              </h3>
+              <p className="text-light opacity-50 small mb-4">Autentique-se para gerenciar suas salas, sorteios e jogadores.</p>
+
+              {error && <Alert variant="danger" className="bg-transparent border-danger text-danger py-2 small">{error}</Alert>}
+
+              <Form onSubmit={handleAuth}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="text-info small fw-bold opacity-75">SISTEMA E-MAIL</Form.Label>
+                  <Form.Control type="email" value={email} onChange={e=>setEmail(e.target.value)} required 
+                    placeholder="organizador@bingov2.com"
+                    style={{ background: 'var(--glass-bg)', color: 'white', border: '1px solid var(--border)', padding: '12px' }} />
+                </Form.Group>
+                
+                <Form.Group className="mb-4">
+                  <Form.Label className="text-info small fw-bold opacity-75">PASSE DE SEGURANÇA</Form.Label>
+                  <Form.Control type="password" value={password} onChange={e=>setPassword(e.target.value)} required 
+                    placeholder="••••••••"
+                    style={{ background: 'var(--glass-bg)', color: 'white', border: '1px solid var(--border)', padding: '12px' }} />
+                </Form.Group>
+
+                <button type="submit" disabled={loadingAuth} className="btn-cyber btn-primary-cyber w-100 py-3 shadow-lg fw-bold rounded-4">
+                  {loadingAuth ? <Spinner animation="border" size="sm" /> : (isRegister ? "CRIAR CONTA E ACESSAR" : "ENTRAR NO SETUP")}
+                </button>
+              </Form>
+
+              <div className="text-center mt-4">
+                <span className="text-light opacity-50 small">
+                  {isRegister ? "Já possui conta?" : "Não tem conta ainda?"}
+                </span>
+                <span className="text-info small fw-bold ms-2 cursor-pointer" onClick={() => setIsRegister(!isRegister)} style={{ cursor: 'pointer' }}>
+                  {isRegister ? "Fazer Login" : "Registrar-se"}
+                </span>
+              </div>
+            </div>
+          </Col>
+
+          {/* LADO JOGADOR: DESCOBERTA DE SALAS (DIREITA) */}
+          <Col lg={7} className="order-1 order-lg-2">
             <div className="cyber-panel p-4 p-md-5 h-100" style={{ minHeight: '500px' }}>
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <h3 className="fw-bold m-0" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1.2rem' }}>
-                  SALAS <span className="text-info">ABERTAS</span> 🕹️
+                  ENTRAR COMO JOGADOR <span className="text-info">SALAS ABERTAS:</span> 🕹️
                 </h3>
                 {loadingRooms && <Spinner animation="border" size="sm" variant="info" />}
               </div>
@@ -134,54 +182,6 @@ export default function LandingPage() {
                      )}
                   </div>
                 )}
-              </div>
-            </div>
-          </Col>
-
-          {/* LADO ORGANIZADOR: LOGIN INTEGRADO */}
-          <Col lg={5}>
-            <div className="cyber-panel p-4 p-md-5 h-100 position-relative overflow-hidden" 
-              style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '32px' }}>
-              
-              {/* IMAGE ELEMENT */}
-              <div className="mb-4 rounded-4 overflow-hidden border border-secondary border-opacity-25" style={{ height: '140px' }}>
-                 <img src="/bingo_futuristic_bg.png" alt="Bingo Art" className="w-100 h-100 object-fit-cover opacity-75" />
-              </div>
-
-              <h3 className="text-light fw-bold mb-3" style={{ fontFamily: 'var(--font-syncopate)', fontSize: '1rem' }}>
-                ÁREA DO ORGANIZADOR 🛠️
-              </h3>
-              <p className="text-light opacity-50 small mb-4">Autentique-se para gerenciar suas salas, sorteios e jogadores.</p>
-
-              {error && <Alert variant="danger" className="bg-transparent border-danger text-danger py-2 small">{error}</Alert>}
-
-              <Form onSubmit={handleAuth}>
-                <Form.Group className="mb-3">
-                  <Form.Label className="text-info small fw-bold opacity-75">SISTEMA E-MAIL</Form.Label>
-                  <Form.Control type="email" value={email} onChange={e=>setEmail(e.target.value)} required 
-                    placeholder="organizador@bingov2.com"
-                    style={{ background: 'var(--glass-bg)', color: 'white', border: '1px solid var(--border)', padding: '12px' }} />
-                </Form.Group>
-                
-                <Form.Group className="mb-4">
-                  <Form.Label className="text-info small fw-bold opacity-75">PASSE DE SEGURANÇA</Form.Label>
-                  <Form.Control type="password" value={password} onChange={e=>setPassword(e.target.value)} required 
-                    placeholder="••••••••"
-                    style={{ background: 'var(--glass-bg)', color: 'white', border: '1px solid var(--border)', padding: '12px' }} />
-                </Form.Group>
-
-                <button type="submit" disabled={loadingAuth} className="btn-cyber btn-primary-cyber w-100 py-3 shadow-lg fw-bold rounded-4">
-                  {loadingAuth ? <Spinner animation="border" size="sm" /> : (isRegister ? "CRIAR CONTA E ACESSAR" : "ENTRAR NO SETUP")}
-                </button>
-              </Form>
-
-              <div className="text-center mt-4">
-                <span className="text-light opacity-50 small">
-                  {isRegister ? "Já possui conta?" : "Não tem conta ainda?"}
-                </span>
-                <span className="text-info small fw-bold ms-2 cursor-pointer" onClick={() => setIsRegister(!isRegister)} style={{ cursor: 'pointer' }}>
-                  {isRegister ? "Fazer Login" : "Registrar-se"}
-                </span>
               </div>
             </div>
           </Col>
