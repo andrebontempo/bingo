@@ -2,14 +2,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-// Chave secreta do Super Admin (só precisa de rebuild do frontend para mudar)
-const SUPER_KEY = "bingo@SA2025";
-
 export default function SuperAdminLogin() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [secretKey, setSecretKey] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,13 +14,6 @@ export default function SuperAdminLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
-
-    // Valida a chave secreta ANTES de chamar o backend
-    if (secretKey !== SUPER_KEY) {
-      setError("Chave secreta inválida.");
-      return;
-    }
-
     setLoading(true);
     try {
       const res = await fetch(`${baseUrl}/api/auth/login`, {
@@ -39,8 +28,12 @@ export default function SuperAdminLogin() {
         return;
       }
 
-      // Acesso garantido: chave secreta + credenciais válidas
-      localStorage.setItem("superAdminData", JSON.stringify({ ...data, role: "superadmin" }));
+      if (data.role !== "superadmin") {
+        setError("Acesso negado. Apenas Super Admins podem entrar aqui.");
+        return;
+      }
+
+      localStorage.setItem("superAdminData", JSON.stringify(data));
       router.push("/superadmin/dashboard");
     } catch {
       setError("Erro de conexão. Tente novamente.");
@@ -65,7 +58,6 @@ export default function SuperAdminLogin() {
           boxShadow: "0 0 40px rgba(239,68,68,0.1)",
         }}
       >
-        {/* Logo / Title */}
         <div className="text-center mb-4">
           <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>🛡️</div>
           <h1
@@ -77,7 +69,6 @@ export default function SuperAdminLogin() {
           <p className="text-white opacity-40 small mb-0">Área restrita — Bingo V2 Pro</p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleLogin} className="d-flex flex-column gap-3">
           <div>
             <label className="text-white opacity-60 small mb-1 d-block">E-mail</label>
@@ -108,23 +99,6 @@ export default function SuperAdminLogin() {
               style={{
                 background: "rgba(255,255,255,0.07)",
                 border: "1px solid rgba(239,68,68,0.3)",
-                outline: "none",
-                fontSize: "0.95rem",
-              }}
-            />
-          </div>
-          <div>
-            <label className="text-white opacity-60 small mb-1 d-block">Chave Secreta</label>
-            <input
-              type="password"
-              required
-              value={secretKey}
-              onChange={(e) => setSecretKey(e.target.value)}
-              placeholder="••••••••••••"
-              className="w-100 rounded-3 px-3 py-2 text-white"
-              style={{
-                background: "rgba(255,255,255,0.04)",
-                border: "1px solid rgba(239,68,68,0.5)",
                 outline: "none",
                 fontSize: "0.95rem",
               }}
