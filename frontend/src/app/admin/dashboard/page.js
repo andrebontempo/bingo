@@ -83,12 +83,26 @@ export default function AdminDashboard() {
   };
 
   const getVoice = () => {
-    const ptVoices = voices.filter(v => v.lang.startsWith("pt"));
-    const vList = ptVoices.length > 0 ? ptVoices : voices;
+    const ptVoices = voices.filter(v => v.lang.toLowerCase().includes("pt"));
+    
+    if (ptVoices.length === 0) return voices[0]; // Fallback universal
+
     if (selectedVoiceType === 'female') {
-      return vList.find(v => v.name.toLowerCase().includes("female") || v.name.toLowerCase().includes("maria")) || vList[0];
+      const female = ptVoices.find(v => 
+        v.name.toLowerCase().includes("female") || 
+        v.name.toLowerCase().includes("maria") || 
+        v.name.toLowerCase().includes("luciana") || 
+        v.name.toLowerCase().includes("google português")
+      );
+      return female || ptVoices[0];
     } else {
-      return vList.find(v => v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("daniel")) || vList[0];
+      const male = ptVoices.find(v => 
+        v.name.toLowerCase().includes("male") || 
+        v.name.toLowerCase().includes("daniel") || 
+        v.name.toLowerCase().includes("felipe") ||
+        v.name.toLowerCase().includes("google português")
+      );
+      return male || ptVoices[0];
     }
   };
 
@@ -104,8 +118,9 @@ export default function AdminDashboard() {
     }
     const u = new SpeechSynthesisUtterance(text);
     u.voice = v;
-    u.rate = selectedVoiceType === 'female' ? 0.95 : 0.85;
-    u.pitch = selectedVoiceType === 'female' ? 1.0 : 0.75;
+    u.lang = 'pt-BR'; // Força o motor de fala para português
+    u.rate = selectedVoiceType === 'female' ? 1.0 : 0.9;
+    u.pitch = selectedVoiceType === 'female' ? 1.1 : 0.8;
     window.speechSynthesis.speak(u);
   };
 
