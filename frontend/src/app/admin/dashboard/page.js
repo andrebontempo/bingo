@@ -162,6 +162,43 @@ export default function AdminDashboard() {
     setPlayers([]);
     if (socket) socket.emit('close_room', roomId);
     setRoomId(null);
+    if (admin) fetchAdminRooms(admin.id);
+  };
+
+  const resumeRoom = async (rid) => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/${rid}`);
+      const data = await res.json();
+      if (res.ok) {
+        setRoomId(data.roomId);
+        setGameMode(data.gameMode);
+        
+        // Mapear drawnNumbers do banco para o estado local
+        const drawn = data.drawnNumbers || [];
+        setCalledNumbers(drawn);
+        
+        // Restaurar histórico
+        const hist = drawn.map(n => ({ number: n, time: new Date().toLocaleTimeString() }));
+        setHistory(hist);
+        
+        // Restaurar jogadores
+        setPlayers(data.players || []);
+        
+        if (drawn.length > 0) {
+          setLastDrawn(drawn[drawn.length - 1]);
+        } else {
+          setLastDrawn(null);
+        }
+
+        if (socket) {
+          socket.emit('create_room', { roomId: data.roomId });
+        }
+      } else {
+        alert(data.message || "Erro ao retomar sala.");
+      }
+    } catch (e) {
+      alert("Erro de conexão ao retomar sala.");
+    }
   };
 
   const closeRoomManually = async (rid) => {
@@ -318,7 +355,10 @@ export default function AdminDashboard() {
                               <div className="text-white small opacity-75">{r.gameMode} Bolas • {r.players?.length || 0} Jogadores</div>
                               <div className="badge bg-secondary mt-1" style={{ fontSize: '0.6rem' }}>{r.status === 'playing' ? 'EM JOGO' : 'ESPERANDO'}</div>
                           </div>
-                          <button className="btn btn-sm btn-outline-danger" onClick={() => closeRoomManually(r.roomId)}>FECHAR</button>
+                          <div className="d-flex gap-2">
+                             <button className="btn btn-sm btn-info fw-bold" onClick={() => resumeRoom(r.roomId)}>RETOMAR</button>
+                             <button className="btn btn-sm btn-outline-danger" onClick={() => closeRoomManually(r.roomId)}>FECHAR</button>
+                          </div>
                         </div>
                       ))
                     ) : (
