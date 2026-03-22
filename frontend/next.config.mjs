@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // SPA / Static SDA
+  // output: 'export', // Removido para suportar o SSR do "npm run start" nativo no Docker
   trailingSlash: true,
 };
 
