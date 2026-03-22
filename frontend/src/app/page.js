@@ -67,24 +67,25 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-vh-100 d-flex flex-column" style={{ background: 'var(--bg-dark)', color: 'white' }}>
-      {/* HEADER SECTION */}
-      <header className="py-5 text-center">
-        <h1 className="mb-2" style={{ 
-          fontSize: 'clamp(2rem, 5vw, 3.8rem)', 
-          fontFamily: 'var(--font-syncopate)', 
-          fontWeight: '300', // Sem Negrito
-          letterSpacing: '8px',
-          color: 'var(--primary)',
-          textShadow: '0 0 20px rgba(14, 165, 233, 0.3)'
-        }}>
-          BINGO <span className="text-white">V2 PRO</span>
-        </h1>
-        <p className="opacity-50 small text-uppercase" style={{ letterSpacing: '4px' }}>Futuristic Gaming Engine</p>
-      </header>
+    <div className="min-vh-100" style={{ background: 'var(--bg-dark)', color: 'white' }}>
+      <Container className="py-5">
+        {/* HEADER SECTION - INTEGRADO NO CONTAINER PARA GARANTIR ORDEM NO CELULAR */}
+        <header className="text-center mb-5">
+          <h1 className="mb-2" style={{ 
+            fontSize: 'clamp(2rem, 5vw, 3.8rem)', 
+            fontFamily: 'var(--font-syncopate)', 
+            fontWeight: '300', // Sem Negrito
+            letterSpacing: '8px',
+            color: 'var(--primary)',
+            textShadow: '0 0 20px rgba(14, 165, 233, 0.3)'
+          }}>
+            BINGO <span className="text-white">V2 PRO</span>
+          </h1>
+          <p className="opacity-50 small text-uppercase" style={{ letterSpacing: '4px' }}>Futuristic Gaming Engine</p>
+        </header>
 
-      <Container className="flex-grow-1 mb-5">
-        <Row className="g-5 justify-content-center">
+        {/* MARGEM SUPERIOR SOLICITADA (mt-5) */}
+        <Row className="g-5 justify-content-center mt-lg-5 mt-3">
           {/* LADO ORGANIZADOR: LOGIN INTEGRADO (ESQUERDA / POSIÇÃO 2 NO CELULAR) */}
           <Col lg={5} className="order-2 order-lg-1">
             <div className="cyber-panel p-4 p-md-5 h-100 position-relative overflow-hidden" 
@@ -158,11 +159,11 @@ export default function LandingPage() {
             </div>
           </Col>
         </Row>
+
+        <footer className="mt-5 pt-5 text-center opacity-25" style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>
+          © 2026 BINGO V2 PRO • SYNCED & SECURE ENGINE
+        </footer>
       </Container>
-      
-      <footer className="py-4 text-center opacity-25" style={{ fontFamily: 'monospace', fontSize: '0.8rem' }}>
-        © 2026 BINGO V2 PRO • SYNCED & SECURE ENGINE
-      </footer>
 
       <style jsx>{`
         .cursor-pointer { cursor: pointer; }
