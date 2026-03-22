@@ -391,23 +391,36 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  {/* CONTROLES MOBILE: APARECEM AQUI SÓ NO CELULAR (ABAIXO DO NÚMERO) */}
+                  {/* CONTROLES MOBILE: IGUAIS AO DESKTOP, MAS COMPACTOS PARA O TOPO DO CELULAR */}
                   <div className="d-block d-lg-none mb-4">
-                    <section className="cyber-panel controls-panel">
-                      <div className="control-stack d-flex flex-column gap-2">
+                    <section className="cyber-panel controls-panel p-3">
+                      <div className="control-stack d-flex flex-column gap-3">
                         {autoMode > 0 ? (
-                          <button className="btn-cyber border-danger text-danger bg-transparent rounded-3 w-100 py-3 mb-2 fw-bold" onClick={() => setAutoMode(0)}>
-                            ⏹ Parar Sorteio Auto
+                          <button className="btn-cyber border-danger text-danger bg-transparent rounded-3 w-100 py-4 fw-bold shadow-lg" onClick={() => setAutoMode(0)}>
+                            ⏹ PARAR SORTEIO AUTO
                           </button>
                         ) : (
-                          <button className="btn-cyber btn-primary-cyber rounded-3 w-100 py-3 mb-2 fw-bold" onClick={drawNumber} style={{ fontSize: '1.2rem' }}>
+                          <button className="btn-cyber btn-primary-cyber rounded-3 w-100 py-4 fw-bold shadow-lg" onClick={drawNumber} style={{ fontSize: '1.4rem', letterSpacing: '2px' }}>
                             SORTEAR BOLA
                           </button>
                         )}
+                        
                         <div className="d-flex gap-2">
-                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 5000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(5000)}>⚡ Auto 5s</button>
-                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 8000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(8000)}>🐢 Auto 8s</button>
-                          <button className="btn btn-outline-secondary btn-sm text-white border-secondary rounded-3" onClick={resetGame}>♻️ Novo</button>
+                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 5000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(5000)}>
+                            ⚡ 5s
+                          </button>
+                          <button className={`btn-cyber flex-grow-1 rounded-3 py-2 small ${autoMode === 8000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(8000)}>
+                            🐢 8s
+                          </button>
+                          <button className="btn-cyber flex-grow-1 border-secondary text-white bg-transparent rounded-3 py-2 small" onClick={resetGame}>
+                            ♻️ NOVO
+                          </button>
+                        </div>
+
+                        {/* VOZ NO CELULAR TAMBÉM */}
+                        <div className="d-flex gap-2 voice-switch w-100 border border-secondary shadow-sm rounded-3 overflow-hidden">
+                          <button className={`flex-grow-1 py-1 small ${selectedVoiceType === 'male' ? 'active' : ''}`} style={{ background: selectedVoiceType === 'male' ? 'var(--primary)' : 'transparent', border: 'none', color: 'white' }} onClick={() => setSelectedVoiceType('male')}>VOZ 1</button>
+                          <button className={`flex-grow-1 py-1 small ${selectedVoiceType === 'female' ? 'active' : ''}`} style={{ background: selectedVoiceType === 'female' ? 'var(--primary)' : 'transparent', border: 'none', color: 'white' }} onClick={() => setSelectedVoiceType('female')}>VOZ 2</button>
                         </div>
                       </div>
                     </section>
@@ -464,12 +477,12 @@ export default function AdminDashboard() {
                     </div>
                   </section>
 
-                  <section className="cyber-panel qr-panel text-center">
-                    <h2 className="text-light fw-bold fs-6 opacity-75 mb-3" style={{ fontFamily: 'var(--font-syncopate)' }}>QR CODE</h2>
-                    <div className="d-flex justify-content-center p-2 bg-white mx-auto my-2" style={{ borderRadius: '16px', maxWidth: '200px' }}>
-                      <QRCodeSVG value={`${frontendUrl}/jogar?room=${roomId}`} size={160} />
+                  <section className="cyber-panel qr-panel text-center p-2">
+                    <h2 className="text-light fw-bold fs-6 opacity-75 mb-3 pt-2" style={{ fontFamily: 'var(--font-syncopate)' }}>QR CODE</h2>
+                    <div className="d-flex justify-content-center bg-white mx-auto my-2" style={{ borderRadius: '12px', width: '100%', maxWidth: '300px' }}>
+                      <QRCodeSVG value={`${frontendUrl}/jogar?room=${roomId}`} size={260} className="w-100 h-auto p-2" />
                     </div>
-                    <p className="very-small text-light mb-0 opacity-50">Jogadores entram apenas escaneando.</p>
+                    <p className="very-small text-light mb-2 opacity-50">Escaneie para entrar na sala.</p>
                   </section>
 
                   <section className="cyber-panel players-panel overflow-hidden">
