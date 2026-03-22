@@ -30,6 +30,58 @@ router.post('/create', async (req, res) => {
   }
 });
 
+const generateCard = (maxMode) => {
+  const colSize = Math.max(5, Math.ceil(maxMode / 5));
+  const newCartela = [];
+  for (let c = 0; c < 5; c++) {
+    let colNums = [];
+    while (colNums.length < 5) {
+      let maxLimit = Math.min((c + 1) * colSize, maxMode);
+      let minLimit = c * colSize + 1;
+      let range = maxLimit - minLimit + 1;
+      if (range < 5) {
+          minLimit = Math.max(1, maxMode - 4);
+          maxLimit = maxMode;
+      }
+      const rn = Math.floor(Math.random() * (maxLimit - minLimit + 1)) + minLimit;
+      if (!colNums.includes(rn)) colNums.push(rn);
+    }
+    colNums.sort((a,b) => a - b);
+    if (c === 2) colNums[2] = "FREE";
+    newCartela.push(colNums);
+  }
+  const rows = [];
+  for (let r = 0; r < 5; r++) {
+    let rowObj = [];
+    for (let c = 0; c < 5; c++) rowObj.push(newCartela[c][r]);
+    rows.push(rowObj);
+  }
+  return rows;
+};
+
+router.post('/:roomId/join', async (req, res) => {
+  const { name, deviceId } = req.body;
+  try {
+    const room = await Room.findOne({ roomId: req.params.roomId });
+    if (!room) return res.status(404).json({ message: 'Sala não encontrada.' });
+    
+    let player = room.players.find(p => p.deviceId === deviceId);
+    if (player) return res.json({ name: player.name, card: player.card });
+    
+    if (room.players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+        return res.status(400).json({ message: 'Este nome já está em uso nesta sala.' });
+    }
+    
+    const card = generateCard(room.gameMode);
+    room.players.push({ name, deviceId, card });
+    await room.save();
+    
+    res.json({ name, card });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 router.put('/:roomId/draw', async (req, res) => {
    const { number } = req.body;
    try {

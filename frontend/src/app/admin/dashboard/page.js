@@ -9,13 +9,14 @@ export default function AdminDashboard() {
   const router = useRouter();
   const [admin, setAdmin] = useState(null);
   const [roomId, setRoomId] = useState(null);
-  
+
   const [gameMode, setGameMode] = useState(75);
   const [calledNumbers, setCalledNumbers] = useState([]);
   const [history, setHistory] = useState([]);
   const [lastDrawn, setLastDrawn] = useState(null);
   const [autoMode, setAutoMode] = useState(0);
-  
+  const [players, setPlayers] = useState([]); // Nova lista de jogadores
+
   const [voices, setVoices] = useState([]);
   const [selectedVoiceType, setSelectedVoiceType] = useState('male');
   const [frontendUrl, setFrontendUrl] = useState('');
@@ -46,9 +47,16 @@ export default function AdminDashboard() {
       socket.on('player_linha', (data) => {
         alert(`LINHA ACIONADA POR: ${data.playerName}`);
       });
+      socket.on('player_joined', (data) => {
+        setPlayers(prev => {
+          if (prev.some(p => p.name === data.name)) return prev;
+          return [...prev, { name: data.name }];
+        });
+      });
       return () => {
         socket.off('player_bingo');
         socket.off('player_linha');
+        socket.off('player_joined');
       };
     }
   }, [socket, roomId]);
@@ -66,6 +74,7 @@ export default function AdminDashboard() {
       setCalledNumbers([]);
       setLastDrawn(null);
       setHistory([]);
+      setPlayers([]);
       if (socket) socket.emit('join_room', data.roomId);
     } catch (e) {
       console.error(e);
@@ -119,6 +128,7 @@ export default function AdminDashboard() {
     setCalledNumbers([]);
     setLastDrawn(null);
     setHistory([]);
+    setPlayers([]);
     if (socket) socket.emit('close_room', roomId);
     setRoomId(null);
   };
@@ -129,10 +139,10 @@ export default function AdminDashboard() {
       setAutoMode(0);
       return alert("Todos sorteados!");
     }
-    
+
     let n;
     do { n = Math.floor(Math.random() * gameMode) + 1; } while (calledNumbers.includes(n));
-    
+
     const timeStr = new Date().toLocaleTimeString('pt-BR', { hour12: false });
     const newCalled = [...calledNumbers, n];
     setCalledNumbers(newCalled);
@@ -177,10 +187,10 @@ export default function AdminDashboard() {
     if (gameMode !== 75 && gameMode !== 90) {
       const rowsCount = gameMode / 10;
       const rows = [];
-      for (let r=0; r<rowsCount; r++) {
+      for (let r = 0; r < rowsCount; r++) {
         const cells = [];
-        for (let c=1; c<=10; c++) {
-          const n = r*10 + c;
+        for (let c = 1; c <= 10; c++) {
+          const n = r * 10 + c;
           cells.push(<td key={n} className={calledNumbers.includes(n) ? "highlight" : ""}>{n}</td>);
         }
         rows.push(<tr key={r}>{cells}</tr>);
@@ -189,9 +199,9 @@ export default function AdminDashboard() {
     } else {
       const rowsCount = gameMode === 75 ? 15 : 18;
       const rows = [];
-      for (let r=1; r<=rowsCount; r++) {
+      for (let r = 1; r <= rowsCount; r++) {
         const cells = [];
-        for (let c=0; c<5; c++) {
+        for (let c = 0; c < 5; c++) {
           const n = r + c * rowsCount;
           cells.push(<td key={n} className={calledNumbers.includes(n) ? "highlight" : ""}>{n}</td>);
         }
@@ -207,9 +217,9 @@ export default function AdminDashboard() {
         <h1 id="mainTitle" className="mb-0 text-light fw-bold d-flex align-items-center flex-wrap gap-3" style={{ letterSpacing: '1px', fontSize: 'clamp(1.5rem, 4vw, 2rem)' }}>
           {roomId ? (
             <>
-              SALA ABERTA
+              Sala Aberta
               <span className="ms-2 text-info" style={{ fontSize: 'clamp(1.2rem, 3vw, 1.8rem)' }}>
-                - CÓDIGO: {roomId}
+                | Cód: {roomId}
               </span>
             </>
           ) : (
@@ -228,8 +238,8 @@ export default function AdminDashboard() {
           <div className="board-glass p-4 p-md-5 text-center d-flex flex-column align-items-center justify-content-center" style={{ borderRadius: '24px', maxWidth: '600px', width: '100%', border: '1px solid rgba(255,255,255,0.1)' }}>
             <div className="mb-4 text-info opacity-75">
               <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm2 7a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-1.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
-                <path d="M14 2H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zM2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2z"/>
+                <path d="M4.5 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zM3 4.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm2 7a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1zm-1.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                <path d="M14 2H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zM2 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2H2z" />
               </svg>
             </div>
             <h2 className="text-light fw-bold mb-4" style={{ fontFamily: 'var(--font-syncopate)' }}>ESTAÇÃO BINGO</h2>
@@ -256,10 +266,10 @@ export default function AdminDashboard() {
               <table className="w-100">
                 <thead>
                   {(gameMode === 75 || gameMode === 90) && (
-                     <tr>{["B", "I", "N", "G", "O"].map(c => <th key={c} className="text-center fs-5 pb-3 w-20">{c}</th>)}</tr>
+                    <tr>{["B", "I", "N", "G", "O"].map(c => <th key={c} className="text-center fs-5 pb-3 w-20">{c}</th>)}</tr>
                   )}
                   {(gameMode !== 75 && gameMode !== 90) && (
-                     <tr>{[1,2,3,4,5,6,7,8,9,10].map(c => <th key={c} className="text-center fs-6 pb-2">{c}</th>)}</tr>
+                    <tr>{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(c => <th key={c} className="text-center fs-6 pb-2">{c}</th>)}</tr>
                   )}
                 </thead>
                 <tbody>{renderCols()}</tbody>
@@ -272,7 +282,7 @@ export default function AdminDashboard() {
               <h2 className="mb-3 text-light fw-bold">Comandos</h2>
               <div className="control-stack d-flex flex-column gap-2">
                 <button className="btn-cyber bg-transparent text-white border-secondary rounded-3 py-2 mb-1" onClick={resetGame}>♻️ Novo Bingo</button>
-                
+
                 <div className="d-flex gap-2">
                   <button className={`btn-cyber flex-grow-1 rounded-3 py-2 ${autoMode === 5000 ? 'border-info text-info fw-bold' : 'border-secondary text-white bg-transparent'}`} onClick={() => setAutoMode(5000)}>
                     ⚡ Auto 5s
@@ -298,7 +308,7 @@ export default function AdminDashboard() {
                 </div>
               </div>
             </section>
-            
+
             <section className="cyber-panel qr-panel text-center">
               <h2 className="text-light fw-bold">QR Code</h2>
               <div className="d-flex justify-content-center p-3 bg-white mx-auto my-3" style={{ borderRadius: '16px', maxWidth: '240px' }}>
@@ -307,12 +317,30 @@ export default function AdminDashboard() {
               <p className="small text-light mb-0">Jogadores entram apenas escaneando.</p>
             </section>
 
+            <section className="cyber-panel mt-4 overflow-hidden">
+               <div className="d-flex justify-content-between align-items-center mb-3">
+                 <h2 className="text-light fw-bold m-0">Jogadores</h2>
+                 <span className="badge bg-info" style={{ fontSize: '0.8rem' }}>{players.length}</span>
+               </div>
+               <div className="d-flex flex-wrap gap-2" style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                 {players.length > 0 ? (
+                   players.map((p, i) => (
+                     <span key={i} className="badge bg-dark border border-secondary text-light px-3 py-2" style={{ borderRadius: '12px', fontSize: '0.85rem' }}>
+                       👤 {p.name}
+                     </span>
+                   ))
+                 ) : (
+                   <p className="text-light opacity-50 small mb-0 w-100 text-center">Nenhum jogador na sala.</p>
+                 )}
+               </div>
+            </section>
+
             <section className="cyber-panel history-panel mt-4 mb-4">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h2 className="text-light fw-bold m-0">Histórico</h2>
                 <span className="badge" style={{ background: 'var(--accent)', fontSize: '0.8rem' }}>{calledNumbers.length} bolas</span>
               </div>
-              
+
               {history.length > 0 ? (
                 <div className="d-flex flex-column gap-2" style={{ maxHeight: '250px', overflowY: 'auto', paddingRight: '10px' }}>
                   {history.map((item, idx) => (

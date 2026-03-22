@@ -12,6 +12,17 @@ export default function PlayerHome() {
   const [cartela, setCartela] = useState([]);
   const [marked, setMarked] = useState([]);
 
+  const [deviceId, setDeviceId] = useState("");
+
+  useEffect(() => {
+    let id = localStorage.getItem("bingo_device_id");
+    if (!id) {
+      id = Math.random().toString(36).substring(2, 11) + Date.now().toString(36);
+      localStorage.setItem("bingo_device_id", id);
+    }
+    setDeviceId(id);
+  }, []);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const roomFromUrl = urlParams.get('room');
@@ -39,54 +50,32 @@ export default function PlayerHome() {
     };
   }, [socket]);
 
-  const generateCard = (maxMode) => {
-    const colSize = Math.max(5, Math.ceil(maxMode / 5));
-    const newCartela = [];
-    for (let c = 0; c < 5; c++) {
-      let colNums = [];
-      while (colNums.length < 5) {
-        let maxLimit = Math.min((c + 1) * colSize, maxMode);
-        let minLimit = c * colSize + 1;
-        let range = maxLimit - minLimit + 1;
-        if (range < 5) {
-            minLimit = Math.max(1, maxMode - 4);
-            maxLimit = maxMode;
-        }
-        const rn = Math.floor(Math.random() * (maxLimit - minLimit + 1)) + minLimit;
-        if (!colNums.includes(rn)) colNums.push(rn);
-      }
-      colNums.sort((a,b) => a - b);
-      if (c === 2) colNums[2] = "FREE";
-      newCartela.push(colNums);
-    }
-    const rows = [];
-    for (let r = 0; r < 5; r++) {
-      let rowObj = [];
-      for (let c = 0; c < 5; c++) {
-        rowObj.push(newCartela[c][r]);
-      }
-      rows.push(rowObj);
-    }
-    setCartela(rows);
-  };
-
   const joinGame = async (e) => {
     e.preventDefault();
-    if (!roomId || !name) return;
+    if (!roomId || !name || !deviceId) return;
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/${roomId}`);
-      let mode = 75;
-      if (res.ok) {
-        const room = await res.json();
-        mode = room.gameMode || 75;
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'}/api/rooms/${roomId}/join`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, deviceId })
+      });
+      
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.message || "Erro ao entrar na sala");
+        return;
       }
+
+      setCartela(data.card);
+      setName(data.name); 
+
       if (socket) {
-        socket.emit('join_room', roomId);
-        generateCard(mode);
+        socket.emit('join_room', { roomId, playerName: data.name });
         setJoined(true);
       }
     } catch(err) {
       console.log(err);
+      alert("Servidor indisponível no momento.");
     }
   };
 

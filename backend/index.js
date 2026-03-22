@@ -36,8 +36,13 @@ io.on('connection', (socket) => {
   console.log('Participant connected:', socket.id);
 
   // Player/Admin joins a specific game/room
-  socket.on('join_room', (roomId) => {
+  socket.on('join_room', (data) => {
+    const roomId = typeof data === 'string' ? data : data.roomId;
+    const name = typeof data === 'string' ? null : data.playerName;
     socket.join(roomId);
+    if (name) {
+      io.to(roomId).emit('player_joined', { name, id: socket.id });
+    }
     console.log(`Socket ${socket.id} joined room ${roomId}`);
   });
 

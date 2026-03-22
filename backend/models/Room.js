@@ -5,6 +5,11 @@ const RoomSchema = new mongoose.Schema({
   admin: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true },
   gameMode: { type: Number, enum: [30, 75, 80, 90], default: 75 },
   drawnNumbers: [{ type: Number }],
+  players: [{
+    name: String,
+    deviceId: String,
+    card: [[mongoose.Schema.Types.Mixed]] // 5x5 grid
+  }],
   status: { type: String, enum: ['waiting', 'playing', 'finished'], default: 'waiting' },
   createdAt: { type: Date, default: Date.now }
 });
