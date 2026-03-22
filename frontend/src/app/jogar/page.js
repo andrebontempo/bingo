@@ -85,28 +85,28 @@ export default function PlayerHome() {
 
   if (joined) {
     return (
-      <Container className="d-flex flex-column align-items-center justify-content-center min-vh-100 py-3">
-        <h2 className="mb-4 text-center" style={{ fontFamily: 'var(--font-syncopate)', color: 'var(--primary)', letterSpacing: '2px' }}>
+      <Container className="d-flex flex-column align-items-center justify-content-center min-vh-100 py-1">
+        <h2 className="mb-2 text-center" style={{ fontSize: '1.2rem', fontFamily: 'var(--font-syncopate)', color: 'var(--primary)', letterSpacing: '1px' }}>
           SALA - {roomId}
         </h2>
         
-        <div className="d-flex align-items-center justify-content-between bg-dark border shadow-sm rounded-4 w-100 px-4 py-2 mb-4" style={{ maxWidth: '420px', borderColor: 'rgba(255,255,255,0.1)' }}>
-          <span className="text-light opacity-75 small fw-bold text-uppercase" style={{ letterSpacing: '1px' }}>ÚLTIMA BOLA:</span>
-          <div className="number-display pop m-0" style={{ fontSize: '2.4rem', color: 'var(--accent)', textShadow: '0 0 10px rgba(14,165,233,0.3)', minHeight: '40px' }}>
-             {lastDrawn ? lastDrawn : <span style={{ fontSize: '1rem', whiteSpace: 'nowrap', letterSpacing: '2px', color: 'var(--text-muted)' }}>AGUARDE</span>}
+        <div className="d-flex align-items-center justify-content-between bg-dark border shadow-sm rounded-4 w-100 px-3 py-1 mb-2" style={{ maxWidth: '420px', borderColor: 'rgba(255,255,255,0.1)' }}>
+          <span className="text-light opacity-75 small fw-bold text-uppercase" style={{ letterSpacing: '1px', fontSize: '0.7rem' }}>ÚLTIMA BOLA:</span>
+          <div className="number-display pop m-0" style={{ fontSize: '1.8rem', color: 'var(--accent)', textShadow: '0 0 10px rgba(14,165,233,0.3)', minHeight: '30px' }}>
+             {lastDrawn ? lastDrawn : <span style={{ fontSize: '0.82rem', whiteSpace: 'nowrap', letterSpacing: '1px', color: 'var(--text-muted)' }}>AGUARDE</span>}
           </div>
         </div>
 
-        <Card className="cyber-panel w-100 border-0" style={{ maxWidth: '420px' }}>
-          <Card.Body className="p-sm-4 p-2">
-            <h4 className="text-center mb-3 text-light">Cartela de <span style={{ color: 'var(--accent)' }}>{name}</span></h4>
+        <Card className="cyber-panel w-100 border-0 shadow-lg" style={{ maxWidth: '420px' }}>
+          <Card.Body className="p-2 p-sm-3">
+            <h4 className="text-center mb-2 text-light small">Cartela de <span style={{ color: 'var(--accent)' }}>{name}</span></h4>
             
-            <div className="board-glass p-2 mb-4 mx-auto w-100" style={{ borderRadius: '12px', overflowX: 'hidden' }}>
-              <table className="w-100 text-center m-0 p-0" style={{ tableLayout: 'fixed', borderSpacing: '4px', borderCollapse: 'separate' }}>
+            <div className="board-glass p-1 mb-2 mx-auto w-100" style={{ borderRadius: '12px', overflowX: 'hidden' }}>
+              <table className="w-100 text-center m-0 p-0" style={{ tableLayout: 'fixed', borderSpacing: '2px', borderCollapse: 'separate' }}>
                 <thead>
                   <tr>
                     {["B", "I", "N", "G", "O"].map(letter => (
-                      <th key={letter} className="fs-5 pb-2 text-primary" style={{ fontFamily: 'var(--font-syncopate)' }}>
+                      <th key={letter} className="small pb-1 text-primary fw-bold" style={{ fontFamily: 'var(--font-syncopate)' }}>
                         {letter}
                       </th>
                     ))}
@@ -126,16 +126,16 @@ export default function PlayerHome() {
                                style={{ 
                                  width: '100%', 
                                  aspectRatio: '1/1',
-                                 fontSize: isFree ? '1rem' : 'clamp(0.9rem, 4vw, 1.3rem)', 
+                                 fontSize: isFree ? '1rem' : 'clamp(0.85rem, 5vw, 1.2rem)', 
                                  fontWeight: 'bold', 
-                                 borderRadius: '8px', 
+                                 borderRadius: '6px', 
                                  cursor: isFree ? 'default' : 'pointer',
                                  background: isMarked ? 'linear-gradient(135deg, var(--primary), var(--accent))' : 'var(--glass-bg)',
                                  color: isMarked ? '#fff' : 'var(--text-muted)',
                                  border: isMarked ? '2px solid var(--accent)' : '1px solid var(--border)',
-                                 boxShadow: isMarked ? '0 0 10px rgba(14, 165, 233, 0.3)' : 'none',
-                                 transition: 'all 0.2s',
-                                 transform: isMarked ? 'scale(1.05)' : 'scale(1)'
+                                 boxShadow: isMarked ? '0 0 8px rgba(14, 165, 233, 0.3)' : 'none',
+                                 transition: 'all 0.15s',
+                                 transform: isMarked ? 'scale(1.02)' : 'scale(1)'
                                }}>
                                {isFree ? "⭐" : cell}
                              </div>
@@ -148,16 +148,16 @@ export default function PlayerHome() {
               </table>
             </div>
             
-            <div className="d-flex flex-sm-row flex-column gap-3 w-100">
+            <div className="d-flex flex-row gap-2 w-100">
               <button 
-                className="btn-cyber btn-warning-cyber flex-grow-1 py-3 m-0 shadow-sm" 
-                style={{ fontSize: '1.5rem', borderRadius: '12px' }} 
+                className="btn-cyber btn-warning-cyber flex-grow-1 py-2 m-0 shadow-sm fw-bold" 
+                style={{ fontSize: 'clamp(0.9rem, 4vw, 1.2rem)', borderRadius: '10px' }} 
                 onClick={() => socket && socket.emit('linha_called', { roomId, playerName: name, cardNumbers: cartela })}>
                 LINHA!
               </button>
               <button 
-                className="btn-cyber btn-primary-cyber flex-grow-1 py-3 m-0 shadow-sm" 
-                style={{ fontSize: '1.5rem', borderRadius: '12px' }} 
+                className="btn-cyber btn-primary-cyber flex-grow-1 py-2 m-0 shadow-sm fw-bold" 
+                style={{ fontSize: 'clamp(0.9rem, 4vw, 1.2rem)', borderRadius: '10px' }} 
                 onClick={() => socket && socket.emit('bingo_called', { roomId, playerName: name, cardNumbers: cartela })}>
                 BINGO!
               </button>
