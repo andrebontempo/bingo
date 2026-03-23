@@ -1,1 +1,9 @@
-/.agent
+backend/.env
+frontend/.env
+node_modules
+.agent/*
+.gitignore
+.env
+.env.local
+.env.example
+.env.production
