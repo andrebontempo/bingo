@@ -1,7 +1,7 @@
 # Usa imagem oficial do Node
 FROM node:20-alpine
 
-# Cria diretório da aplicação dentro do container
+# Cria diretório da aplicação dentro do containerdd
 WORKDIR /usr/src/app
 
 # Copia os arquivos de dependências primeiro (para cache de build)
